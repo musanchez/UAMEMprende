@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,12 +15,8 @@ class Emprendimiento extends Model
         'emprendedor_id',
     ];
 
-    protected $hidden = [
-        
-    ];
-
-    protected $casts = [
-       
-    ];
-
+    public function emprendedor()
+    {
+        return $this->belongsTo(Estudiante::class, 'emprendedor_id');
+    }
 }

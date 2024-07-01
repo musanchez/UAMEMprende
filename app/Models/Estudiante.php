@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,5 +26,11 @@ class Estudiante extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
+
+    public function emprendimientos()
+    {
+        return $this->hasMany(Emprendimiento::class, 'emprendedor_id');
+    }
 }

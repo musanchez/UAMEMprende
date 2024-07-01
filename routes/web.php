@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EmprendimientosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +26,6 @@ Route::get('/', [App\Http\Controllers\EmprendimientosController::class, 'index']
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/estudiantes', [EstudianteController::class, 'index']) -> name('estudiantes.index');
+Route::get('/estudiantes', [App\Http\Controllers\EstudianteController::class, 'index']) -> name('estudiantes.index');
 
 //Route::get('/emprendimientos', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');

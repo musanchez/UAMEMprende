@@ -3,29 +3,23 @@
 @section('content')
 
 <div class="container">
-    <h2>Listado de Emprendimientos</h2>
-</div>
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripcion</th>
-                <th>Imagen</th>
-                <th>Emprendedor</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($emprendimientos as $emp)
-                <tr>
-                    <td>{{ $emp->nombre }}</td>
-                    <td>{{ $emp->descripcion }}</td>
-                    <td>{{ $emp->imagen }}</td>
-                    <td>{{ $emp->emprendedor_id }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <h2 class="mb-4">Listado de Emprendimientos</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach ($emprendimientos as $emprendimiento)
+        <div class="col">
+            <div class="card">
+                <img src="{{ $emprendimiento->imagen }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>
+                    <p class="card-text">{{ \Illuminate\Support\Str::limit($emprendimiento->descripcion, 100, $end='...') }}</p>
+                    <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
+                    <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
+                    <a href="#" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Ver más</a>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
 </div>
 
 @endsection
