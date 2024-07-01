@@ -6,3 +6,10 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+.line-decorative {
+    border-top: 3px solid #439FA5;
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
