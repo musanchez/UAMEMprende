@@ -13,10 +13,16 @@ class Emprendimiento extends Model
         'descripcion',
         'imagen',
         'emprendedor_id',
+        'categoria_id'
     ];
 
     public function emprendedor()
     {
         return $this->belongsTo(Estudiante::class, 'emprendedor_id');
+    }
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 }

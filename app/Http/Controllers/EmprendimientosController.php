@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Emprendimiento;
+use App\Models\Estudiante;
+use App\Models\Categoria;
+use Illuminate\Support\Facades\Auth;
+
 
 class EmprendimientosController extends Controller
 {
+    
+    protected $redirectTo = '/';
+
+    
     /**
      * Display a listing of the resource.
      */
@@ -17,20 +25,33 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.index', compact('emprendimientos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $categorias = Categoria::all();
+        return view('emprendimientos.create', compact('categorias'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        // Validar y guardar los datos
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'imagen' => 'required|string',
+            'categoria_id' => 'required|integer|exists:categorias,id'
+        ]);
+    
+        // Obtener el ID del usuario autenticado
+        $emprendedor_id = Auth::id();
+    
+        // Asignar el ID del usuario autenticado al array de datos validados
+        $validatedData['emprendedor_id'] = $emprendedor_id;
+    
+        // Crear el emprendimiento en la base de datos
+        Emprendimiento::create($validatedData);
+
+
+        return redirect()->route('emprendimientos.index');
     }
 
     /**

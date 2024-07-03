@@ -18,6 +18,7 @@
             color: #dddddd;
         }
     </style>
+
 </head>
 <body>
 
@@ -60,7 +61,7 @@
                         <a class="nav-link" href="">Mis Emprendimientos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Crear Emprendimiento</a>
+                        <a class="nav-link" href="{{ route('crear.emprendimiento') }}">Crear Emprendimiento</a>
                     </li>
                 @endguest
             </ul>

@@ -16,7 +16,10 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion');
             $table->string('imagen');
-            //categoria
+
+            //categoria:
+            //$table->foreignId('categoria_id')->constrained('categorias'); // Define la llave foránea
+
             //estudiante:
             $table->foreignId('emprendedor_id')->constrained('estudiantes'); // Define la llave foránea
             $table->timestamps();
