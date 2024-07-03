@@ -58,7 +58,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Mis Emprendimientos</a>
+                        <a class="nav-link" href="{{ route('misEmprendimientos') }}">Mis Emprendimientos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('crear.emprendimiento') }}">Crear Emprendimiento</a>

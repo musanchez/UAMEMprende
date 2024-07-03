@@ -25,4 +25,9 @@ class Emprendimiento extends Model
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
+
+    public function productos()
+    {
+        return $this->hasMany(Producto::class);
+    }
 }

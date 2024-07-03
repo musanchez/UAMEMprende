@@ -15,7 +15,7 @@
                     <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
                     <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
                     <p class="card-text"><strong>Categoría:</strong> {{ $emprendimiento->categoria->nombre }}</p>
-                    <a href="#" class="btn btn-primary mt-auto" style="background-color: #439FA5; border-color: #439FA5;">Ver más</a>
+                    <a href="{{ route('emprendimientos.show', $emprendimiento->id) }}" class="btn btn-primary mt-auto" style="background-color: #439FA5; border-color: #439FA5;">Ver más</a>
                 </div>
             </div>
         </div>

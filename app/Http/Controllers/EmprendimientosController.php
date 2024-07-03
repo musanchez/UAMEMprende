@@ -25,6 +25,14 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.index', compact('emprendimientos'));
     }
 
+
+    public function misEmprendimientos()
+    {
+        $user = Auth::user();
+        $emprendimientos = $user->emprendimientos;
+        return view('emprendimientos.misEmprendimientos', compact('emprendimientos'));
+    }
+
     public function create()
     {
         $categorias = Categoria::all();
@@ -57,8 +65,10 @@ class EmprendimientosController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Emprendimiento $emprendimiento)
     {
+        $productos = $emprendimiento->productos;
+        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
         //
     }
 

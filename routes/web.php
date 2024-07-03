@@ -28,10 +28,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/estudiantes', [App\Http\Controllers\EstudianteController::class, 'index']) -> name('estudiantes.index');
 
+Route::get('/misEmprendimientos', [App\Http\Controllers\EmprendimientosController::class, 'misEmprendimientos']) ->name('misEmprendimientos');
+
 Route::get('/emprendimientos', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
 
 Route::get('/crear-emprendimiento', [App\Http\Controllers\EmprendimientosController::class, 'create'])->name('crear.emprendimiento');
 
-Route::get('/categorias', [App\Http\Controllers\CategoriasController::class, 'index'])->name('categorias.index');
+// Route::get('/categorias', [App\Http\Controllers\CategoriasController::class, 'index'])->name('categorias.index');
 
 Route::post('/post-emprendimiento', [App\Http\Controllers\EmprendimientosController::class, 'store'])->name('guardar.emprendimiento');
+
+Route::get('/emprendimiento/{emprendimiento}', [App\Http\Controllers\EmprendimientosController::class, 'show'])->name('emprendimientos.show');
