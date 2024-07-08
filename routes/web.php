@@ -39,3 +39,19 @@ Route::get('/crear-emprendimiento', [App\Http\Controllers\EmprendimientosControl
 Route::post('/post-emprendimiento', [App\Http\Controllers\EmprendimientosController::class, 'store'])->name('guardar.emprendimiento');
 
 Route::get('/emprendimiento/{emprendimiento}', [App\Http\Controllers\EmprendimientosController::class, 'show'])->name('emprendimientos.show');
+
+Route::get('/emprendimiento/{id}/editarscreen', [App\Http\Controllers\EmprendimientosController::class, 'showEmprendimientoEditScreen'])->name('editar.emprendimiento');
+
+Route::put('/emprendimiento/{id}/editarbd', [App\Http\Controllers\EmprendimientosController::class, 'update'])->name('actualizar.emprendimiento');
+
+Route::delete('/emprendimiento/{id}/eliminar', [App\Http\Controllers\EmprendimientosController::class, 'destroy'])->name('eliminar.emprendimiento');
+
+Route::get('/emprendimiento/{id}/productos', [App\Http\Controllers\EmprendimientosController::class, 'emprendimientoProductos'])->name('emprendimiento.productos');
+
+Route::get('emprendimientos/{emprendimiento_id}/productos/create', [App\Http\Controllers\ProductoController::class, 'create'])->name('crear.producto');
+
+Route::post('/emprendimientos/{emprendimiento_id}/productos', [App\Http\Controllers\ProductoController::class, 'store'])->name('crear.producto.store');
+
+Route::get('/emprendimientos/{emprendimiento}/productos/{producto}/editar', [App\Http\Controllers\ProductoController::class, 'edit'])->name('editar.producto');
+
+Route::put('/emprendimientos/{emprendimiento}/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'update'])->name('editar.producto.update');

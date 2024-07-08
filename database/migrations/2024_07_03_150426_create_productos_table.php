@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('oculto')->default(false);
             $table->foreignId('emprendimiento_id')->constrained();
             $table->timestamps();
+            $table->string('imagen');
         });
     }
 

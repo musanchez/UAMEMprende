@@ -33,6 +33,20 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.misEmprendimientos', compact('emprendimientos'));
     }
 
+    public function emprendimientoProductos($id)
+    {
+        $emprendimiento = Emprendimiento::findOrFail($id);
+        $productos = $emprendimiento->productos;
+        return view('emprendimientos.productosEmprendimiento', compact('emprendimiento', 'productos'));
+    }
+
+    public function showEmprendimientoEditScreen($id)
+    {
+        $emprendimiento = Emprendimiento::findOrFail($id);
+        $categorias = Categoria::all(); // Assuming you have a Categoria model
+        return view('emprendimientos.editar', compact('emprendimiento', 'categorias'));
+    }
+
     public function create()
     {
         $categorias = Categoria::all();
@@ -56,10 +70,10 @@ class EmprendimientosController extends Controller
         $validatedData['emprendedor_id'] = $emprendedor_id;
     
         // Crear el emprendimiento en la base de datos
-        Emprendimiento::create($validatedData);
+        $emp = Emprendimiento::create($validatedData);
 
 
-        return redirect()->route('emprendimientos.index');
+        return redirect()->route('emprendimientos.show', $emp);
     }
 
     /**
@@ -75,24 +89,31 @@ class EmprendimientosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function update(int $id, Request $request)
     {
-        //
-    }
+        $emprendimiento = Emprendimiento::findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'imagen' => 'required|string',
+            'categoria_id' => 'required|integer|exists:categorias,id'
+        ]);
+
+        $emprendimiento->update($validatedData);
+
+        return redirect()->route('misEmprendimientos')
+            ->with('success', 'Emprendimiento actualizado correctamente');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $emprendimiento = Emprendimiento::findOrFail($id);
+        $emprendimiento->delete();
+
+        return redirect()->route('misEmprendimientos')->with('success', 'Emprendimiento eliminado con éxito');
     }
 }
