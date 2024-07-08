@@ -15,7 +15,7 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ $producto->nombre }}</h5>
                         <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>
-                        <p class="card-text"><strong>Precio:</strong> C${{ $producto->precio }} €</p>
+                        <p class="card-text"><strong>Precio:</strong> C${{ $producto->precio }} </p>
                         <a href="{{ route('editar.producto', ['emprendimiento' => $emprendimiento->id, 'producto' => $producto->id]) }}" class="btn btn-sm btn-secondary">Editar</a>
                     </div>
                 </div>
