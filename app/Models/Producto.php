@@ -16,4 +16,8 @@ class Producto extends Model
     }
 
     use HasFactory;
+
+    protected $casts = [
+        'oculto' => 'boolean',
+    ];
 }

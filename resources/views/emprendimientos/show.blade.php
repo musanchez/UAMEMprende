@@ -40,17 +40,19 @@
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach($productos as $producto)
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <img src="{{ $producto->imagen }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $producto->nombre }}</h5>
-                        <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>
-                        <p class="card-text"><strong>Precio:</strong> C${{ $producto->precio }}</p>
-                        <!-- No agregamos el botón "Ver más" ya que quieres mostrar todos los detalles aquí -->
+            @if(!$producto->oculto)
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <img src="{{ $producto->imagen }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ $producto->nombre }}</h5>
+                            <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>
+                            <p class="card-text"><strong>Precio:</strong> C${{ $producto->precio }}</p>
+                            <!-- No agregamos el botón "Ver más" ya que quieres mostrar todos los detalles aquí -->
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         @endforeach
     </div>
 </div>

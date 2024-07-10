@@ -55,7 +55,7 @@
                             <div class="mb-3">
                                 <label for="oculto" class="form-label">{{ __('Oculto') }}</label>
                                 <input type="hidden" name="oculto" value="0">
-                                <input id="oculto" type="checkbox" class="form-check-input @error('oculto') is-invalid @enderror" name="oculto" value="1" {{ $producto->oculto ? 'checked' : '' }}>
+                                <input id="oculto" type="checkbox" class="form-check-input @error('oculto') is-invalid @enderror" name="oculto" value="1" {{ old('oculto', $producto->oculto ?? false) ? 'checked' : '' }}>                                
                                 @error('oculto')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
