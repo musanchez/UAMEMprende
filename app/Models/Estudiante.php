@@ -33,4 +33,14 @@ class Estudiante extends Authenticatable
     {
         return $this->hasMany(Emprendimiento::class, 'emprendedor_id');
     }
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comentario::class);
+    }
+
+    public function carrera()
+    {
+        return $this->belongsTo(Estudiante::class);
+    }
 }

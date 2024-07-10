@@ -55,5 +55,49 @@
             @endif
         @endforeach
     </div>
+
+    <!-- Sección de Comentarios -->
+    <div class="row mb-5">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Comentarios</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Formulario para añadir comentarios -->
+                    @auth
+                        <form action="{{ route('comentarios.store') }}" method="POST">
+                            @csrf
+                            <div class="form-group mb-3">
+                                <label for="comentario" class="form-label">Añadir un comentario:</label>
+                                <textarea class="form-control" id="comentario" name="comentario" rows="3" required></textarea>
+                                <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
+                                <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                    @endauth
+
+                    <!-- Mostrar mensajes de autenticación -->
+                    @guest
+                        <p class="text-muted">Inicia sesión para añadir un comentario.</p>
+                    @endguest
+
+                    <!-- Listado de comentarios -->
+                    <hr>
+                    @foreach($emprendimiento->comentarios as $comentario)
+                        <div class="media mb-4">
+                            <img class="mr-3 rounded-circle" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim($comentario->estudiante->email))) }}?d=mp&s=64" alt="{{ $comentario->estudiante->nombre }}">
+                            <div class="media-body">
+                                <h5 class="mt-0">{{ $comentario->estudiante->nombre }} <small class="text-muted">{{ $comentario->created_at->diffForHumans() }}</small></h5>
+                                <p>{{ $comentario->comentario }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -14,9 +14,11 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->string('celular');
+            $table->boolean('status')->default(true);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->foreignId('carrera_id')->constrained('carreras');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -76,6 +76,20 @@
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="carrera_id" class="form-label">{{ __('Carrera') }}</label>
+                            <select id="carrera_id" name="carrera_id" class="form-control">
+                                @foreach($carreras as $carrera)
+                                    <option value="{{ $carrera->id }}" {{ (old('carrera_id') == $carrera->id) ? 'selected' : '' }}>{{ $carrera->nombre }}</option>
+                                @endforeach
+                            </select>
+                            @error('carrera_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
                         <button type="submit" class="btn btn-primary">{{ __('Registrar') }}</button>
                     </form>
                 </div>

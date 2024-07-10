@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('emprendimientos', function (Blueprint $table) {
-            //
-            $table->foreignId('categoria_id')->constained('categorias');
+        Schema::create('carreras', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre');
         });
     }
 
@@ -22,10 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('emprendimientos', function (Blueprint $table) {
-            //
-            $table->dropForeign(['categoria_id']);
-            $table->dropColumn('categoria_id');
-        });
+        Schema::dropIfExists('carreras');
     }
 };

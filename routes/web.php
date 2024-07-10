@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
     return view('emprendimientos.index');
 });
 */
-
+use App\Http\Controllers\PreferenciaController;
 
 Auth::routes();
 
@@ -55,3 +55,10 @@ Route::post('/emprendimientos/{emprendimiento_id}/productos', [App\Http\Controll
 Route::get('/emprendimientos/{emprendimiento}/productos/{producto}/editar', [App\Http\Controllers\ProductoController::class, 'edit'])->name('editar.producto');
 
 Route::put('/emprendimientos/{emprendimiento}/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'update'])->name('editar.producto.update');
+
+Route::post('/comentarios', [App\Http\Controllers\ComentarioController::class, 'store'])->name('comentarios.store');
+
+Route::prefix('favorites')->group(function () {
+    Route::post('/add/{emprendimiento}', [PreferenciaController::class, 'addFavorite'])->name('favorites.add');
+    Route::delete('/remove/{emprendimiento}', [PreferenciaController::class, 'removeFavorite'])->name('favorites.remove');
+});

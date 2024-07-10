@@ -30,4 +30,10 @@ class Emprendimiento extends Model
     {
         return $this->hasMany(Producto::class);
     }
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comentario::class);
+    }
+
 }

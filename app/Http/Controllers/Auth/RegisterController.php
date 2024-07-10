@@ -28,6 +28,7 @@ class RegisterController extends Controller
             'celular' => ['required', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:estudiantes'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'carrera_id' => 'required|exists:carreras,id',
         ]);
     }
 
@@ -40,6 +41,7 @@ class RegisterController extends Controller
             'celular' => $data['celular'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'carrera_id' => $data['carrera']
         ]);
     }
 }
