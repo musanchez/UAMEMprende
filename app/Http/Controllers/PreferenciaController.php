@@ -37,7 +37,7 @@ class PreferenciaController extends Controller
     {
         // Validar el formulario, asegurándonos de recibir la calificación
         $request->validate([
-            'calificacion' => 'required|integer|min:0|max:10',
+            'calificacion' => 'required|integer|min:0|max:5',
             'estudiante_id' => 'required|exists:estudiantes,id',
             'emprendimiento_id' => 'required|exists:emprendimientos,id',
         ]);

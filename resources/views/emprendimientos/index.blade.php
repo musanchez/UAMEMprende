@@ -51,19 +51,34 @@
                         <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
                         <p class="card-text"><strong>Categoría:</strong> {{ $emprendimiento->categoria->nombre }}</p>
                         <div class="mt-auto d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>Calificación promedio:</strong>
-                                <span>{{ number_format($emprendimiento->promedioCalificaciones(), 1) }}</span>
+                            <div class="d-flex align-items-center">
+                                <div class="star-rating me-2">
+                                    @php
+                                        $promedioCalificacion = $emprendimiento->promedioCalificaciones();
+                                        $filledStars = floor($promedioCalificacion);
+                                        $halfStar = $promedioCalificacion - $filledStars >= 0.5;
+                                    @endphp
+                                    @for ($i = 0; $i < 5; $i++)
+                                        @if ($i < $filledStars)
+                                            <i class="fas fa-star"></i>
+                                        @elseif ($i == $filledStars && $halfStar)
+                                            <i class="fas fa-star-half-alt"></i>
+                                        @else
+                                            <i class="far fa-star"></i>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span>{{ number_format($promedioCalificacion, 1) }}</span>
                             </div>
                             <a href="{{ route('emprendimientos.show', $emprendimiento->id) }}" class="btn btn-primary"
                                 style="background-color: #439FA5; border-color: #439FA5;">Ver más</a>
                             @auth
-                                    @php
-                                        $isFavorite = $emprendimiento->preferencias()->where('estudiante_id', auth()->id())->where('favorito', true)->exists();
-                                    @endphp
-                                    <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
-                                        <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
-                                    </button>
+                                @php
+                                    $isFavorite = $emprendimiento->preferencias()->where('estudiante_id', auth()->id())->where('favorito', true)->exists();
+                                @endphp
+                                <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
+                                    <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
+                                </button>
                             @endauth
                         </div>
                     </div>

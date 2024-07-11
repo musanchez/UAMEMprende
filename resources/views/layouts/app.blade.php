@@ -98,19 +98,24 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('favorites') }}">Favoritos</a>
                     </li>
-                    @if (Auth::user()->admin)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('estudiantes') }}">Usuarios</a>
-                        </li>
+                    @if (Auth::user()->status)
+                        @if (Auth::user()->admin)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('estudiantes') }}">Usuarios</a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('misEmprendimientos') }}">Mis Emprendimientos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('crear.emprendimiento') }}">Crear Emprendimiento</a>
+                            </li>
+                        @endif
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('misEmprendimientos') }}">Mis Emprendimientos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('crear.emprendimiento') }}">Crear Emprendimiento</a>
+                            <span class="nav-link text-warning">Tu cuenta está inhabilitada. Solo puedes ver y calificar emprendimientos.</span>
                         </li>
                     @endif
-
                 @endguest
             </ul>
         </div>

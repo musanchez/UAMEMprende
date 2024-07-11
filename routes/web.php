@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ComentarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,3 +79,5 @@ Route::post('/estudiantes/{id}/activar', [EstudianteController::class, 'activar'
 Route::post('/estudiantes/{id}/desactivar', [EstudianteController::class, 'desactivar'])->name('estudiantes.desactivar');
 
 Route::post('/calificar-emprendimiento', [PreferenciaController::class, 'storeOrUpdate'])->name('calificar.emprendimiento');
+Route::delete('/comentarios/{comentario}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
+Route::patch('/comentarios/{comentario}', [ComentarioController::class, 'update'])->name('comentarios.update');

@@ -70,6 +70,7 @@
                 <div class="card-body" style="border: 2px solid #439FA5; border-radius: 8px; background-color: #F0F0F0;">
                     <!-- Formulario para añadir comentarios -->
                     @auth
+                        @if (auth()->user()->status)
                         <form action="{{ route('comentarios.store') }}" method="POST">
                             @csrf
                             <div class="form-group mb-3">
@@ -80,6 +81,9 @@
                             </div>
                             <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Enviar</button>
                         </form>
+                        @else
+                            <p class="text-muted">Tu cuenta ha sido deshabilitada. No puedes añadir comentarios.</p>
+                        @endif
                     @endauth
 
                     <!-- Mostrar mensajes de autenticación -->
@@ -95,9 +99,55 @@
                             <div class="media-body">
                                 <h5 class="mt-0">{{ $comentario->estudiante->nombre }} <small class="text-muted">{{ $comentario->created_at->diffForHumans() }}</small></h5>
                                 <p>{{ $comentario->comentario }}</p>
+
+                                <!-- Botones para editar y eliminar -->
+                                @auth
+                                    @if((auth()->user()->id == $comentario->estudiante_id || auth()->user()->admin) && auth()->user()->status)
+                                        <div class="d-flex justify-content-end">
+                                            <!-- Botón para editar -->
+                                            @if (auth()->user()->id == $comentario->estudiante_id)
+                                                <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editCommentModal{{ $comentario->id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            @endif
+
+                                            <!-- Botón para eliminar -->
+                                            <form action="{{ route('comentarios.destroy', $comentario->id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este comentario?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                @endauth
                             </div>
                         </div>
                         <hr>
+
+                        <!-- Modal para editar comentario -->
+                        <div class="modal fade" id="editCommentModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="editCommentModalLabel{{ $comentario->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editCommentModalLabel{{ $comentario->id }}">Editar comentario</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <div class="form-group mb-3">
+                                                <label for="comentario{{ $comentario->id }}" class="form-label">Comentario:</label>
+                                                <textarea class="form-control" id="comentario{{ $comentario->id }}" name="comentario" rows="3" required>{{ $comentario->comentario }}</textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Actualizar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -117,8 +167,8 @@
                         <form action="{{ route('calificar.emprendimiento' )}}" method="POST">
                             @csrf
                             <div class="form-group mb-3">
-                                <label for="calificacion" class="form-label">Calificación (0 al 10):</label>
-                                <input type="number" class="form-control" id="calificacion" name="calificacion" min="0" max="10" required>
+                                <label for="calificacion" class="form-label">Calificación (0 al 5):</label>
+                                <input type="number" class="form-control" id="calificacion" name="calificacion" min="0" max="5" required>
                                 <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
                                 <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
                             </div>
