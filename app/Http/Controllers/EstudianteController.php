@@ -47,7 +47,7 @@ class EstudianteController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'carrera' => 'required|exists:carreras,id',
+            'carrera_id' => 'required|exists:carreras,id',
             'current_password' => 'required|string',
             'new_password' => 'nullable|string|min:8|confirmed'
         ]);
@@ -58,7 +58,7 @@ class EstudianteController extends Controller
 
         $user->nombre = $request->nombre;
         $user->apellido = $request->apellido;
-        $user->carrera_id = $request->carrera;
+        $user->carrera_id = $request->carrera_id;
 
         if ($request->filled('new_password')) {
             $user->password = Hash::make($request->new_password);
@@ -66,7 +66,7 @@ class EstudianteController extends Controller
 
         $user->save();
 
-        return redirect()->route('home')->with('success', 'Perfil actualizado correctamente.');
+        return redirect()->route('emprendimientos.index')->with('success', 'Perfil actualizado correctamente.');
     }
 
 

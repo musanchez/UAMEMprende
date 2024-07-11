@@ -40,7 +40,7 @@
                     <label for="carrera" class="form-label">Carrera</label>
                     <select class="form-select" id="carrera_id" name="carrera_id" required>
                         @foreach ($carreras as $carrera)
-                            <option value="{{ $carrera->id }}" {{ old('carrera', $user->carrera_id) == $carrera->id ? 'selected' : '' }}>
+                            <option value="{{ $carrera->id }}" {{ old('carrera_id', $user->carrera_id) == $carrera->id ? 'selected' : '' }}>
                                 {{ $carrera->nombre }}
                             </option>
                         @endforeach
