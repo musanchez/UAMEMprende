@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
+use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 });
 */
 use App\Http\Controllers\PreferenciaController;
+use App\Http\Controllers\EstudianteController;
 
 Auth::routes();
 
@@ -58,7 +61,20 @@ Route::put('/emprendimientos/{emprendimiento}/productos/{producto}', [App\Http\C
 
 Route::post('/comentarios', [App\Http\Controllers\ComentarioController::class, 'store'])->name('comentarios.store');
 
-Route::prefix('favorites')->group(function () {
-    Route::post('/add/{emprendimiento}', [PreferenciaController::class, 'addFavorite'])->name('favorites.add');
-    Route::delete('/remove/{emprendimiento}', [PreferenciaController::class, 'removeFavorite'])->name('favorites.remove');
+
+Route::get('/favorites', [App\Http\Controllers\EmprendimientosController::class, 'favoritos'])->name('favorites');
+Route::post('/favorites/add/{emprendimiento}', [PreferenciaController::class, 'addFavorite'])->name('favorites.add');
+Route::post('/favorites/remove/{emprendimiento}', [PreferenciaController::class, 'removeFavorite'])->name('favorites.remove');
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/{id}/edit', [EstudianteController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/{id}', [EstudianteController::class, 'update'])->name('profile.update');
 });
+
+Route::get('/estudiantes', [EstudianteController::class, 'index'])->name('estudiantes');
+Route::post('/estudiantes/{id}/activar', [EstudianteController::class, 'activar'])->name('estudiantes.activar');
+Route::post('/estudiantes/{id}/desactivar', [EstudianteController::class, 'desactivar'])->name('estudiantes.desactivar');
+
+Route::post('/calificar-emprendimiento', [PreferenciaController::class, 'storeOrUpdate'])->name('calificar.emprendimiento');

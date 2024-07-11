@@ -36,4 +36,14 @@ class Emprendimiento extends Model
         return $this->hasMany(Comentario::class);
     }
 
+    public function preferencias()
+    {
+        return $this->hasMany(Preferencia::class);
+    }
+
+    public function promedioCalificaciones()
+    {
+        return $this->preferencias()->whereNotNull('calificacion')->avg('calificacion');
+    }
+
 }

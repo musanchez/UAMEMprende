@@ -7,6 +7,7 @@ use App\Models\Estudiante;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Carrera;
 
 class RegisterController extends Controller
 {
@@ -32,6 +33,13 @@ class RegisterController extends Controller
         ]);
     }
 
+    protected function showRegistrationForm()
+    {
+        $carreras = Carrera::all();
+
+        return view('auth.register', compact('carreras'));
+    }
+
     protected function create(array $data)
     {
         return Estudiante::create([
@@ -41,7 +49,7 @@ class RegisterController extends Controller
             'celular' => $data['celular'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'carrera_id' => $data['carrera']
+            'carrera_id' => $data['carrera_id']
         ]);
     }
 }

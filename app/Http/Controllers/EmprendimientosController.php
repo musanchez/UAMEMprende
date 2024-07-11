@@ -11,19 +11,38 @@ use Illuminate\Support\Facades\Auth;
 
 class EmprendimientosController extends Controller
 {
-    
+
     protected $redirectTo = '/';
 
-    
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $emprendimientos = Emprendimiento::all(); // Obtén todos los emprendimientos
-        return view('emprendimientos.index', compact('emprendimientos'));
+        $query = Emprendimiento::query();
+
+        $query->whereHas('emprendedor', function ($q) {
+            $q->where('status', true);
+        });
+
+        if ($request->has('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->search . '%')
+                    ->orWhere('descripcion', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->has('category') && $request->category != '') {
+            $query->where('categoria_id', $request->category);
+        }
+
+        $emprendimientos = $query->get();
+        $categorias = Categoria::all();
+
+        return view('emprendimientos.index', compact('emprendimientos', 'categorias'));
     }
+
 
 
     public function misEmprendimientos()
@@ -62,13 +81,13 @@ class EmprendimientosController extends Controller
             'imagen' => 'required|string',
             'categoria_id' => 'required|integer|exists:categorias,id'
         ]);
-    
+
         // Obtener el ID del usuario autenticado
         $emprendedor_id = Auth::id();
-    
+
         // Asignar el ID del usuario autenticado al array de datos validados
         $validatedData['emprendedor_id'] = $emprendedor_id;
-    
+
         // Crear el emprendimiento en la base de datos
         $emp = Emprendimiento::create($validatedData);
 
@@ -105,6 +124,19 @@ class EmprendimientosController extends Controller
         return redirect()->route('misEmprendimientos')
             ->with('success', 'Emprendimiento actualizado correctamente');
     }
+
+    // EmprendimientoController.php
+
+    public function favoritos()
+    {
+        $userId = auth()->id();
+        $emprendimientos = Emprendimiento::whereHas('preferencias', function ($query) use ($userId) {
+            $query->where('estudiante_id', $userId)->where('favorito', true);
+        })->get();
+
+        return view('emprendimientos.favoritos', compact('emprendimientos'));
+    }
+
 
     /**
      * Remove the specified resource from storage.

@@ -17,6 +17,7 @@ class Estudiante extends Authenticatable
         'email',
         'password',
         'celular',
+        'carrera_id'
     ];
 
     protected $hidden = [
@@ -41,6 +42,6 @@ class Estudiante extends Authenticatable
 
     public function carrera()
     {
-        return $this->belongsTo(Estudiante::class);
+        return $this->belongsTo(Carrera::class);
     }
 }
