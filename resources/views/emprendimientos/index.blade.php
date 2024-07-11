@@ -45,7 +45,8 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>
                         <p class="card-text flex-grow-1">
-                            {{ \Illuminate\Support\Str::limit($emprendimiento->descripcion, 100, $end = '...') }}</p>
+                            {{ \Illuminate\Support\Str::limit($emprendimiento->descripcion, 100, $end = '...') }}
+                        </p>
                         <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
                         <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
                         <p class="card-text"><strong>Categoría:</strong> {{ $emprendimiento->categoria->nombre }}</p>
@@ -57,12 +58,12 @@
                             <a href="{{ route('emprendimientos.show', $emprendimiento->id) }}" class="btn btn-primary"
                                 style="background-color: #439FA5; border-color: #439FA5;">Ver más</a>
                             @auth
-                                                @php
-                                                    $isFavorite = $emprendimiento->preferencias()->where('estudiante_id', auth()->id())->where('favorito', true)->exists();
-                                                @endphp
-                                                <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
-                                                    <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
-                                                </button>
+                                    @php
+                                        $isFavorite = $emprendimiento->preferencias()->where('estudiante_id', auth()->id())->where('favorito', true)->exists();
+                                    @endphp
+                                    <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
+                                        <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
+                                    </button>
                             @endauth
                         </div>
                     </div>
