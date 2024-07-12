@@ -29,7 +29,7 @@ use App\Http\Controllers\EstudianteController;
 
 Auth::routes();
 
-Route::get('/', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
+Route::get('uamEmprende', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

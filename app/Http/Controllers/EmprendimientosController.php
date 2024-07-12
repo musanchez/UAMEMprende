@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class EmprendimientosController extends Controller
 {
 
-    protected $redirectTo = '/';
+    protected $redirectTo = 'uamEmprende';
 
     /**
      * Display a listing of the resource.
