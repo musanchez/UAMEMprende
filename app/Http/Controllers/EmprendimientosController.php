@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Emprendimiento;
 use App\Models\Estudiante;
 use App\Models\Categoria;
+use App\Models\EstadoEmp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -68,6 +69,18 @@ class EmprendimientosController extends Controller
         $emprendimiento = Emprendimiento::findOrFail($id);
         $categorias = Categoria::all(); // Assuming you have a Categoria model
         return view('emprendimientos.editar', compact('emprendimiento', 'categorias'));
+    }
+
+    public function listarPendientes()
+    {
+        $categorias = Categoria::all(); // Asumiendo que tienes un modelo Categoria
+    
+        // Obtener los emprendimientos pendientes
+        $emprendimientos = Emprendimiento::whereHas('estado_emp', function ($query) {
+            $query->where('nombre', 'PENDIENTE');
+        })->with(['emprendedor', 'categoria'])->get();
+    
+        return view('emprendimientos.showPendientes', compact('emprendimientos', 'categorias'));
     }
 
     public function create()
@@ -135,14 +148,14 @@ class EmprendimientosController extends Controller
 
     public function favoritos()
     {
-        $userId = auth()->id();
-        $emprendimientos = Emprendimiento::whereHas('preferencias', function ($query) use ($userId) {
-            $query->where('estudiante_id', $userId)->where('favorito', true);
+        $emprendimientos = Emprendimiento::whereHas('preferencias', function ($query) {
+            $query->where('estudiante_id', auth()->id())->where('favorito', true);
+        })->whereHas('estado_emp', function ($query) {
+            $query->where('nombre', 'VERIFICADO');
         })->get();
 
         return view('emprendimientos.favoritos', compact('emprendimientos'));
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -154,4 +167,35 @@ class EmprendimientosController extends Controller
 
         return redirect()->route('misEmprendimientos')->with('success', 'Emprendimiento eliminado con éxito');
     }
+
+    public function validar($id)
+    {
+        $emprendimiento = Emprendimiento::findOrFail($id);
+        $estadoVerificado = EstadoEmp::where('nombre', 'VERIFICADO')->first();
+        
+        if ($estadoVerificado) {
+            $emprendimiento->estado_emp_id = $estadoVerificado->id;
+            $emprendimiento->save();
+
+            return redirect()->route('emprendimientos.pendientes')->with('success', 'Emprendimiento validado exitosamente.');
+        } else {
+            return redirect()->route('emprendimientos.pendientes')->with('error', 'Error al validar el emprendimiento.');
+        }
+    }
+
+    public function rechazar($id)
+    {
+        $emprendimiento = Emprendimiento::findOrFail($id);
+        $estadoRechazado = EstadoEmp::where('nombre', 'RECHAZADO')->first();
+
+        if ($estadoRechazado) {
+            $emprendimiento->estado_emp_id = $estadoRechazado->id;
+            $emprendimiento->save();
+
+            return redirect()->route('emprendimientos.pendientes')->with('success', 'Emprendimiento rechazado exitosamente.');
+        } else {
+            return redirect()->route('emprendimientos.pendientes')->with('error', 'Error al rechazar el emprendimiento.');
+        }
+    }
 }
+

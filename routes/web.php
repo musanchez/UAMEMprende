@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\EmprendimientosController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +25,7 @@ use App\Http\Controllers\ComentarioController;
 */
 use App\Http\Controllers\PreferenciaController;
 use App\Http\Controllers\EstudianteController;
+
 
 Auth::routes();
 
@@ -81,3 +84,8 @@ Route::post('/estudiantes/{id}/desactivar', [EstudianteController::class, 'desac
 Route::post('/calificar-emprendimiento', [PreferenciaController::class, 'storeOrUpdate'])->name('calificar.emprendimiento');
 Route::delete('/comentarios/{comentario}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
 Route::patch('/comentarios/{comentario}', [ComentarioController::class, 'update'])->name('comentarios.update');
+
+Route::get('/emprendimientos/pendientes', [EmprendimientosController::class, 'listarPendientes'])->name('emprendimientos.pendientes');
+
+Route::patch('/emprendimientos/{id}/validar', [EmprendimientosController::class, 'validar'])->name('emprendimientos.validar');
+Route::patch('/emprendimientos/{id}/rechazar', [EmprendimientosController::class, 'rechazar'])->name('emprendimientos.rechazar');

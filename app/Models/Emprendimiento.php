@@ -59,7 +59,7 @@ class Emprendimiento extends Model
         return $this->preferencias()->whereNotNull('calificacion')->avg('calificacion');
     }
 
-    public function estadoEmp()
+    public function estado_emp()
     {
         return $this->belongsTo(EstadoEmp::class, 'estado_emp_id');
     }

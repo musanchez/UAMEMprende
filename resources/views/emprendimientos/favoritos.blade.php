@@ -26,8 +26,8 @@
                         @endphp
                         <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
                             <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
-                        </button>
                         @endauth
+                        </button>
                     </div>
                 </div>
             </div>
