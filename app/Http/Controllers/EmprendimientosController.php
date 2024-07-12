@@ -7,12 +7,16 @@ use App\Models\Emprendimiento;
 use App\Models\Estudiante;
 use App\Models\Categoria;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 
 class EmprendimientosController extends Controller
 {
 
     protected $redirectTo = '/';
+
+    
 
 
     /**
@@ -74,12 +78,14 @@ class EmprendimientosController extends Controller
 
     public function store(Request $request)
     {
+        //$estadoPendienteId = DB::table('estados_emps')->where('nombre', 'PENDIENTE')->value('id');
+        
         // Validar y guardar los datos
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
             'imagen' => 'required|string',
-            'categoria_id' => 'required|integer|exists:categorias,id'
+            'categoria_id' => 'required|integer|exists:categorias,id',
         ]);
 
         // Obtener el ID del usuario autenticado

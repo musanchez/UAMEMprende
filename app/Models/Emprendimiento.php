@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Emprendimiento extends Model
 {
@@ -13,12 +14,20 @@ class Emprendimiento extends Model
         'descripcion',
         'imagen',
         'emprendedor_id',
-        'categoria_id'
+        'categoria_id',
+        'estado_emp_id'
     ];
 
-    protected $attributes = [
-        'estado_emp_id' => 1, // Valor predeterminado es 1 (PENDIENTE)
-    ];
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Asignar el estado 'PENDIENTE' por defecto antes de crear un nuevo emprendimiento
+        static::creating(function ($emprendimiento) {
+            $estadoPendienteId = DB::table('estados_emps')->where('nombre', 'PENDIENTE')->value('id');
+            $emprendimiento->estado_emp_id = $estadoPendienteId;
+        });
+    }
 
     public function emprendedor()
     {
