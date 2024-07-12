@@ -16,6 +16,10 @@ class Emprendimiento extends Model
         'categoria_id'
     ];
 
+    protected $attributes = [
+        'estado_emp_id' => 1, // Valor predeterminado es 1 (PENDIENTE)
+    ];
+
     public function emprendedor()
     {
         return $this->belongsTo(Estudiante::class, 'emprendedor_id');
@@ -44,6 +48,11 @@ class Emprendimiento extends Model
     public function promedioCalificaciones()
     {
         return $this->preferencias()->whereNotNull('calificacion')->avg('calificacion');
+    }
+
+    public function estadoEmp()
+    {
+        return $this->belongsTo(EstadoEmp::class, 'estado_emp_id');
     }
 
 }

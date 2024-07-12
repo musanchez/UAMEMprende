@@ -30,6 +30,8 @@ class Estudiante extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $guarded = ['admin'];
+
     public function emprendimientos()
     {
         return $this->hasMany(Emprendimiento::class, 'emprendedor_id');
