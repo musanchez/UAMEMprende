@@ -35,6 +35,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/estudiantes', [App\Http\Controllers\EstudianteController::class, 'index']) -> name('estudiantes.index');
 
+Route::get('/usuarios/buscar', [EstudianteController::class, 'buscar'])->name('usuarios.buscar');
+
 Route::get('/misEmprendimientos', [App\Http\Controllers\EmprendimientosController::class, 'misEmprendimientos']) ->name('misEmprendimientos');
 
 Route::get('/emprendimientos', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
@@ -85,7 +87,8 @@ Route::post('/calificar-emprendimiento', [PreferenciaController::class, 'storeOr
 Route::delete('/comentarios/{comentario}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
 Route::patch('/comentarios/{comentario}', [ComentarioController::class, 'update'])->name('comentarios.update');
 
-Route::get('/emprendimientos/pendientes', [EmprendimientosController::class, 'listarPendientes'])->name('emprendimientos.pendientes');
+Route::get('/emprendimientos/pendientes', [EmprendimientosController::class, 'pendientes'])->name('emprendimientos.pendientes');
 
 Route::patch('/emprendimientos/{id}/validar', [EmprendimientosController::class, 'validar'])->name('emprendimientos.validar');
 Route::patch('/emprendimientos/{id}/rechazar', [EmprendimientosController::class, 'rechazar'])->name('emprendimientos.rechazar');
+

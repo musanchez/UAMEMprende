@@ -37,7 +37,7 @@ class ProductoController extends Controller
             'descripcion' => $request->descripcion,
             'imagen' => $request->imagen,
             'precio' => $request->precio,
-            'oculto' => $request->has('oculto'),
+            'oculto' => $request->input('oculto'),
             'emprendimiento_id' => $emprendimiento_id,
         ]);
 

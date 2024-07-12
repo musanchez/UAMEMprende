@@ -37,35 +37,37 @@
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach ($emprendimientos as $emprendimiento)
-            <div class="col">
-                <div class="card h-100">
-                    <img src="{{ $emprendimiento->imagen }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}"
-                        style="width: 100%; height: 200px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column align-items-center">
-                        <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>
-                        <p class="card-text flex-grow-1">
-                            {{ \Illuminate\Support\Str::limit($emprendimiento->descripcion, 100, $end = '...') }}
-                        </p>
-                        <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
-                        <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
-                        <p class="card-text"><strong>Categoría:</strong> {{ $emprendimiento->categoria->nombre }}</p>
-                        <p class="card-text"><strong>Estado:</strong> {{ $emprendimiento->estado_emp->nombre }}</p>
-                        <div class="mt-auto">
-                            <form action="{{ route('emprendimientos.validar', $emprendimiento->id) }}" method="POST" class="mb-2">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-primary"
-                                    style="width: 100%; background-color: #439FA5; border-color: #439FA5;">Validar</button>
-                            </form>
-                            <form action="{{ route('emprendimientos.rechazar', $emprendimiento->id) }}" method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-danger" style="width: 100%;">Rechazar</button>
-                            </form>
+            @if ($emprendimiento->estado_emp && $emprendimiento->estado_emp->nombre === 'PENDIENTE')
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ $emprendimiento->imagen }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}"
+                            style="width: 100%; height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>
+                            <p class="card-text flex-grow-1">
+                                {{ \Illuminate\Support\Str::limit($emprendimiento->descripcion, 100, $end = '...') }}
+                            </p>
+                            <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
+                            <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
+                            <p class="card-text"><strong>Categoría:</strong> {{ $emprendimiento->categoria->nombre }}</p>
+                            <p class="card-text"><strong>Estado:</strong> {{ $emprendimiento->estado_emp->nombre }}</p>
+                            <div class="mt-auto">
+                                <form action="{{ route('emprendimientos.validar', $emprendimiento->id) }}" method="POST" class="mb-2">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-primary"
+                                        style="width: 100%; background-color: #439FA5; border-color: #439FA5;">Validar</button>
+                                </form>
+                                <form action="{{ route('emprendimientos.rechazar', $emprendimiento->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-danger" style="width: 100%;">Rechazar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
         @endforeach
     </div>
 

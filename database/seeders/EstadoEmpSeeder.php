@@ -19,7 +19,6 @@ class EstadoEmpSeeder extends Seeder
             ['nombre' => 'PENDIENTE'],
             ['nombre' => 'VERIFICADO'],
             ['nombre' => 'RECHAZADO'],
-            ['nombre' => 'RESTRINGIDO'],
         ];
 
         // Insertar los estados en la tabla estado_emps

@@ -28,6 +28,32 @@ class EstudianteController extends Controller
         return response()->json(['success' => true, 'message' => 'Usuario activado correctamente']);
     }
 
+    public function buscar(Request $request)
+    {
+        $query = Estudiante::where('admin', false);
+
+        // Filtrar por CIF si está presente en la solicitud
+        if ($request->has('cif')) {
+            $query->where('cif', 'LIKE', '%' . $request->input('cif') . '%');
+        }
+
+        // Filtrar por Nombre o Apellido si está presente en la solicitud
+        if ($request->has('nombre')) {
+            $nombre = $request->input('nombre');
+            $query->where(function ($q) use ($nombre) {
+                $q->where('nombre', 'LIKE', '%' . $nombre . '%')
+                ->orWhere('apellido', 'LIKE', '%' . $nombre . '%');
+            });
+        }
+
+        // Obtener los resultados filtrados
+        $usuarios = $query->get();
+
+        // Retornar la vista con los usuarios filtrados
+        return view('estudiantes.index', compact('usuarios'));
+    }
+
+
     public function desactivar($id)
     {
         $usuario = Estudiante::findOrFail($id);

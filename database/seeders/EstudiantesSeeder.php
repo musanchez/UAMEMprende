@@ -26,16 +26,5 @@ class EstudiantesSeeder extends Seeder
             'carrera_id' => null
             // No es necesario incluir 'admin' ya que es false por defecto en el factory
         ]);
-
-        Estudiante::factory()->create([
-            'nombre' => 'Gabriel',
-            'apellido' => 'Chang',
-            'celular' => '76291888', // Ejemplo de celular
-            'email' => 'gdchang@uamv.edu.ni',
-            'cif' => '19014795',
-            'password' => Hash::make('123123123'), // Cifra la contraseña 'password'
-            'carrera_id' => 1,
-            // No es necesario incluir 'admin' ya que es false por defecto en el factory
-        ]);
     }
 }

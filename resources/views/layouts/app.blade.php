@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scaele=1.0">
     <title>UAMEmprende</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
@@ -50,7 +51,10 @@
 <body>
 
 <nav class="navbar navbar-expand-lg custom-navbar">
-    <a class="navbar-brand" href="/">UAMEmprende</a>
+    <a class="navbar-brand" href="/">
+        <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 30px; width: auto;">
+        UAMEmprende
+    </a>
     <div class="admin-badge-container">
         @if (Auth::check() && Auth::user()->admin)
             <span class="admin-badge">ADMIN</span>

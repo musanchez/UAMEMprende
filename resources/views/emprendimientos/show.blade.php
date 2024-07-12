@@ -97,7 +97,7 @@
                         <div class="media mb-4">
                             <img class="mr-3 rounded-circle" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim($comentario->estudiante->email))) }}?d=mp&s=64" alt="{{ $comentario->estudiante->nombre }}">
                             <div class="media-body">
-                                <h5 class="mt-0">{{ $comentario->estudiante->nombre }} <small class="text-muted">{{ $comentario->created_at->diffForHumans() }}</small></h5>
+                                <h5 class="mt-0">{{ $comentario->estudiante->nombre }} {{ $comentario->estudiante->apellido }} <small class="text-muted">{{ $comentario->created_at->diffForHumans() }}</small></h5>
                                 <p>{{ $comentario->comentario }}</p>
 
                                 <!-- Botones para editar y eliminar -->

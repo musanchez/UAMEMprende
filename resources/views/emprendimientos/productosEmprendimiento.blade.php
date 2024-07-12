@@ -4,7 +4,7 @@
 <div class="container">
     <h2 class="mb-4" style="text-align: center">Productos: {{ $emprendimiento->nombre }}</h2>
     <div class="text-center">
-        <a href="{{ route('crear.producto', $emprendimiento->id) }}" class="btn btn-lg btn-primary">Agregar Producto</a>
+        <a href="{{ route('crear.producto', $emprendimiento->id) }}" class="btn btn-lg custom-btn">Agregar Producto</a> <!-- Applied custom-btn class -->
     </div>
     <div class="mb-4"></div> <!-- added a margin bottom to separate the button from the cards -->
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -23,4 +23,18 @@
         @endforeach
     </div>
 </div>
+
+<!-- Agrega este estilo CSS al final del archivo o en tu archivo CSS principal -->
+<style>
+    .custom-btn {
+        background-color: #439FA5;
+        border-color: #439FA5;
+        color: white; /* Ensure text is visible */
+    }
+    .custom-btn:hover {
+        background-color: #367f85; /* Slightly darker for hover effect */
+        border-color: #367f85;
+    }
+</style>
+
 @endsection

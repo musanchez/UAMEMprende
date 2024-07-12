@@ -17,9 +17,6 @@ class EmprendimientosController extends Controller
 
     protected $redirectTo = '/';
 
-    
-
-
     /**
      * Display a listing of the resource.
      */
@@ -83,6 +80,32 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.showPendientes', compact('emprendimientos', 'categorias'));
     }
 
+    public function pendientes(Request $request)
+    {
+        $search = $request->query('search');
+        $category = $request->query('category');
+
+        $query = Emprendimiento::whereHas('estado_emp', function ($q) {
+            $q->where('nombre', 'PENDIENTE');
+        });
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'LIKE', "%{$search}%")
+                ->orWhere('descripcion', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($category) {
+            $query->where('categoria_id', $category);
+        }
+
+        $emprendimientos = $query->get();
+        $categorias = Categoria::all();
+
+        return view('emprendimientos.showPendientes', compact('emprendimientos', 'categorias'));
+    }
+
     public function create()
     {
         $categorias = Categoria::all();
@@ -111,7 +134,7 @@ class EmprendimientosController extends Controller
         $emp = Emprendimiento::create($validatedData);
 
 
-        return redirect()->route('emprendimientos.show', $emp);
+        return redirect()->route('emprendimientos.index', $emp);
     }
 
     /**

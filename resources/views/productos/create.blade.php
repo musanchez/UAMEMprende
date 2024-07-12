@@ -50,22 +50,28 @@
                                 </span>
                             @enderror
                         </div>
-
                         <div class="mb-3">
-                            <label for="oculto" class="form-label">{{ __('Oculto') }}</label>
-                            <input type="hidden" name="oculto" value="0">
-                            <input id="oculto" type="checkbox" class="form-check-input @error('oculto') is-invalid @enderror" name="oculto" value="1" {{ old('oculto', $producto->oculto ?? false) ? 'checked' : '' }}>                            
-                            @error('oculto')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                                <label for="oculto" class="form-label">{{ __('Oculto') }}</label>
+                                <!-- Campo hidden para enviar el valor "false" cuando el checkbox no está marcado -->
+                                <input type="hidden" name="oculto" value="0">
+                                <!-- Checkbox real que enviará "1" cuando está marcado -->
+                                <input id="oculto" type="checkbox"
+                                    class="form-check-input @error('oculto') is-invalid @enderror"
+                                    name="oculto"
+                                    value="1"
+                                    {{ old('oculto', isset($producto) && $producto->oculto) ? 'checked' : '' }}>
+                                <!-- Manejo de errores si es necesario -->
+                                @error('oculto')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
 
                         <div class="mb-3">
                             <br>
                             <br>
-                            <button type="submit" class="btn btn-primary">{{ __('Crear Producto') }}</button>
+                            <button type="submit" class="btn btn-primary custom-btn">{{ __('Crear Producto') }}</button> <!-- Aplicación de la clase 'custom-btn' -->
                         </div>
                     </form>
                 </div>
@@ -87,4 +93,18 @@
     </div>
     @endif
 </div>
+
+<!-- Agrega este estilo CSS al final del archivo o en tu archivo CSS principal -->
+<style>
+    .custom-btn {
+        background-color: #439FA5; /* Color de fondo personalizado */
+        border-color: #439FA5; /* Color del borde */
+    }
+
+    .custom-btn:hover {
+        background-color: #367f85; /* Color de fondo ligeramente más oscuro al pasar el cursor */
+        border-color: #367f85;
+    }
+</style>
+
 @endsection

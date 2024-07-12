@@ -60,7 +60,7 @@
                         <div class="mb-3">
                             <br>
                             <br>
-                            <button type="submit" class="btn btn-primary">{{ __('Actualizar Emprendimiento') }}</button>
+                            <button type="submit" class="btn btn-primary custom-btn">{{ __('Actualizar Emprendimiento') }}</button> <!-- Aplicación de la clase 'custom-btn' -->
                         </div>
                     </form>
                 </div>
@@ -82,4 +82,18 @@
     </div>
     @endif
 </div>
+
+<!-- Agrega este estilo CSS al final del archivo o en tu archivo CSS principal -->
+<style>
+    .custom-btn {
+        background-color: #439FA5; /* Color de fondo personalizado */
+        border-color: #439FA5; /* Color del borde */
+    }
+
+    .custom-btn:hover {
+        background-color: #367f85; /* Color de fondo ligeramente más oscuro al pasar el cursor */
+        border-color: #367f85;
+    }
+</style>
+
 @endsection

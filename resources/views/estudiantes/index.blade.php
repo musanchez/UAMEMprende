@@ -5,6 +5,23 @@
 <div class="container">
     <h2 class="mb-4" style="text-align: center">Usuarios Estudiantes</h2>
 
+    <!-- Barra de búsqueda -->
+    <form action="{{ route('usuarios.buscar') }}" method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="cif" class="form-label">CIF:</label>
+                <input type="text" class="form-control" id="cif" name="cif" value="{{ request()->input('cif') }}">
+            </div>
+            <div class="col-md-4">
+                <label for="nombre" class="form-label">Nombre/Apellido:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ request()->input('nombre') }}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Buscar</button>
+            </div>
+        </div>
+    </form>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -69,5 +86,3 @@
 </script>
 
 @endsection
-
-
