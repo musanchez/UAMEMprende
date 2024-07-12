@@ -90,7 +90,7 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary">{{ __('Registrar') }}</button>
+                        <button type="submit" class="btn btn-primary" style="background-color: #439FA5;">{{ __('Registrar') }}</button>
                     </form>
                 </div>
             </div>
