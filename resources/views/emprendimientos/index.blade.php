@@ -45,8 +45,10 @@
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>
                             <hr style="border-color: #000;"> <!-- Línea gris -->
-                            <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }} {{ $emprendimiento->emprendedor->apellido }}</p>
-                            <p class="card-text"><strong>Carrera:</strong> {{ $emprendimiento->emprendedor->carrera->nombre }}</p>
+                            <p class="card-text"><strong>Emprendedor:</strong> {{ $emprendimiento->emprendedor->nombre }}
+                                {{ $emprendimiento->emprendedor->apellido }}</p>
+                            <p class="card-text"><strong>Carrera:</strong> {{ $emprendimiento->emprendedor->carrera->nombre }}
+                            </p>
                             <p class="card-text"><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
                             <p class="card-text"><strong>Categoría:</strong> {{ $emprendimiento->categoria->nombre }}</p>
                             <div class="mt-auto d-flex justify-content-between align-items-center">
@@ -72,12 +74,12 @@
                                 <a href="{{ route('emprendimientos.show', $emprendimiento->id) }}" class="btn btn-primary"
                                     style="background-color: #439FA5; border-color: #439FA5;">Ver más</a>
                                 @auth
-                                    @php
-                                        $isFavorite = $emprendimiento->preferencias()->where('estudiante_id', auth()->id())->where('favorito', true)->exists();
-                                    @endphp
-                                    <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
-                                        <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
-                                    </button>
+                                                @php
+                                                    $isFavorite = $emprendimiento->preferencias()->where('estudiante_id', auth()->id())->where('favorito', true)->exists();
+                                                @endphp
+                                                <button class="btn btn-link p-0" onclick="toggleFavorite({{ $emprendimiento->id }}, this)">
+                                                    <i class="fas fa-heart fa-2x" style="color: {{ $isFavorite ? 'red' : 'gray' }};"></i>
+                                                </button>
                                 @endauth
                             </div>
                         </div>
@@ -92,15 +94,25 @@
     function toggleFavorite(emprendimientoId, button) {
         const heartIcon = button.querySelector('i');
         const isFavorite = heartIcon.style.color === 'red';
-        const url = isFavorite ? `/favorites/remove/${emprendimientoId}` : `/favorites/add/${emprendimientoId}`;
+        const url = isFavorite ? '{{ route('favorites.remove', ':id') }}' : '{{ route('favorites.add', ':id') }}';
 
-        fetch(url, {
+        fetch(url.replace(':id', emprendimientoId), {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Content-Type': 'application/json'
             }
-        }).then(response => response.json())
+        })
+            .then(response => {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(`La respuesta no es JSON: ${text}`);
+                    });
+                }
+            })
             .then(data => {
                 if (data.favorito) {
                     heartIcon.style.color = 'red';
