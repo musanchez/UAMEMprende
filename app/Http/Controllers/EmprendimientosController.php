@@ -71,12 +71,12 @@ class EmprendimientosController extends Controller
     public function listarPendientes()
     {
         $categorias = Categoria::all(); // Asumiendo que tienes un modelo Categoria
-    
+
         // Obtener los emprendimientos pendientes
         $emprendimientos = Emprendimiento::whereHas('estado_emp', function ($query) {
             $query->where('nombre', 'PENDIENTE');
         })->with(['emprendedor', 'categoria'])->get();
-    
+
         return view('emprendimientos.showPendientes', compact('emprendimientos', 'categorias'));
     }
 
@@ -92,7 +92,7 @@ class EmprendimientosController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nombre', 'LIKE', "%{$search}%")
-                ->orWhere('descripcion', 'LIKE', "%{$search}%");
+                    ->orWhere('descripcion', 'LIKE', "%{$search}%");
             });
         }
 
@@ -115,7 +115,7 @@ class EmprendimientosController extends Controller
     public function store(Request $request)
     {
         //$estadoPendienteId = DB::table('estados_emps')->where('nombre', 'PENDIENTE')->value('id');
-        
+
         // Validar y guardar los datos
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
@@ -171,10 +171,10 @@ class EmprendimientosController extends Controller
 
     public function favoritos()
     {
-        $emprendimientos = Emprendimiento::whereHas('preferencias', function ($query) {
+        $emprendimientos = Emprendimiento::whereHas('emprendedor', function ($query) {
+            $query->where('status', true); 
+        })->whereHas('preferencias', function ($query) {
             $query->where('estudiante_id', auth()->id())->where('favorito', true);
-        })->whereHas('estado_emp', function ($query) {
-            $query->where('nombre', 'VERIFICADO');
         })->get();
 
         return view('emprendimientos.favoritos', compact('emprendimientos'));
@@ -195,7 +195,7 @@ class EmprendimientosController extends Controller
     {
         $emprendimiento = Emprendimiento::findOrFail($id);
         $estadoVerificado = EstadoEmp::where('nombre', 'VERIFICADO')->first();
-        
+
         if ($estadoVerificado) {
             $emprendimiento->estado_emp_id = $estadoVerificado->id;
             $emprendimiento->save();
