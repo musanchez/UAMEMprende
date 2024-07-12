@@ -18,14 +18,6 @@ class CreateEstadoEmpsTable extends Migration
             $table->string('nombre');
             $table->timestamps();
         });
-
-        // Inserta los estados por defecto
-        DB::table('estados_emps')->insert([
-            ['nombre' => 'PENDIENTE'],
-            ['nombre' => 'VERIFICADO'],
-            ['nombre' => 'RECHAZADO'],
-            ['nombre' => 'RESTRINGIDO'],
-        ]);
     }
 
     /**
