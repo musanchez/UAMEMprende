@@ -7,6 +7,7 @@ use App\Models\Emprendimiento;
 use Illuminate\Http\Request;
 use App\Observers\ProductoSubject;
 use App\Observers\EmailObserver;
+use App\Observers\Subject; // Add this line to import the Subject class
 
 class ProductoController extends Controller
 {
@@ -33,33 +34,26 @@ class ProductoController extends Controller
             'oculto' => 'boolean',
         ]);
 
-        // Crear un nuevo producto
+        // Crear el producto vinculado al emprendimiento
         $producto = Producto::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'imagen' => $request->imagen,
             'precio' => $request->precio,
-            'oculto' => $request->input('oculto'),
             'emprendimiento_id' => $emprendimiento_id,
+            'oculto' => $request->oculto
         ]);
 
-        if (!$producto->oculto) {
-            // Obtener el emprendimiento relacionado
-            $emprendimiento = Emprendimiento::find($emprendimiento_id);
-            // Obtener los estudiantes que tienen el emprendimiento en favoritos
-            $favoritos = $emprendimiento->preferencias()->where('favorito', true)->with('estudiante')->get()->pluck('estudiante');
+        // Registrar el observador y notificar
+        $subject = new ProductoSubject();
+        $emailObserver = new EmailObserver();
 
-            // Adjuntar observadores (estudiantes)
-            $emailObserver = new EmailObserver($favoritos);
+        // Registrar el observador
+        $subject->attach($emailObserver);
 
-            // Notificar a todos los observadores sobre el nuevo producto
-            $emailObserver->update([
-                'nombre_producto' => $producto->nombre,
-                'nombre_emprendimiento' => $emprendimiento->nombre,
-                'descripcion' => $producto->descripcion,
-                'precio' => $producto->precio
-            ]);
-        }
+        // Notificar a los observadores sobre el nuevo producto
+        $subject->notify($producto);  // Notificar si corresponde
+
 
         // Redirigir a algún lugar después de guardar, por ejemplo a la lista de productos del emprendimiento
         return redirect()->route('emprendimiento.productos', $emprendimiento_id)->with('success', 'Producto creado exitosamente.');
