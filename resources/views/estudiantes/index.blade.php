@@ -44,7 +44,7 @@
                     <td>{{ $usuario->email }}</td>
                     <td>
                         <button type="button" class="btn {{ $usuario->status ? 'btn-danger' : 'btn-success' }}"
-                                onclick="toggleStatus({{ $usuario->id }}, this)">
+                                onclick="toggleStatus('{{ $usuario->id }}', this)">
                             {{ $usuario->status ? 'Desactivar' : 'Activar' }}
                         </button>
                     </td>

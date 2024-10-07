@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Emprendimiento;
 use Illuminate\Http\Request;
+use App\Observers\ProductoSubject;
+use App\Observers\EmailObserver;
 
 class ProductoController extends Controller
 {
@@ -32,7 +34,7 @@ class ProductoController extends Controller
         ]);
 
         // Crear un nuevo producto
-        Producto::create([
+        $producto = Producto::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'imagen' => $request->imagen,
@@ -40,6 +42,24 @@ class ProductoController extends Controller
             'oculto' => $request->input('oculto'),
             'emprendimiento_id' => $emprendimiento_id,
         ]);
+
+        if (!$producto->oculto) {
+            // Obtener el emprendimiento relacionado
+            $emprendimiento = Emprendimiento::find($emprendimiento_id);
+            // Obtener los estudiantes que tienen el emprendimiento en favoritos
+            $favoritos = $emprendimiento->preferencias()->where('favorito', true)->with('estudiante')->get()->pluck('estudiante');
+
+            // Adjuntar observadores (estudiantes)
+            $emailObserver = new EmailObserver($favoritos);
+
+            // Notificar a todos los observadores sobre el nuevo producto
+            $emailObserver->update([
+                'nombre_producto' => $producto->nombre,
+                'nombre_emprendimiento' => $emprendimiento->nombre,
+                'descripcion' => $producto->descripcion,
+                'precio' => $producto->precio
+            ]);
+        }
 
         // Redirigir a algún lugar después de guardar, por ejemplo a la lista de productos del emprendimiento
         return redirect()->route('emprendimiento.productos', $emprendimiento_id)->with('success', 'Producto creado exitosamente.');

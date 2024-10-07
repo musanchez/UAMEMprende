@@ -48,8 +48,8 @@ class PreferenciaController extends Controller
 
         // Verificar si ya existe una preferencia para este estudiante y emprendimiento
         $preferencia = Preferencia::where('estudiante_id', $estudiante_id)
-                                  ->where('emprendimiento_id', $emprendimiento_id)
-                                  ->first();
+            ->where('emprendimiento_id', $emprendimiento_id)
+            ->first();
 
         if ($preferencia) {
             // Si existe, actualizamos la calificación existente
