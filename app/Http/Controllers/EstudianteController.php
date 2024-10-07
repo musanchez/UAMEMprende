@@ -65,8 +65,8 @@ class EstudianteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-        if ($user->id != $id) {
+        $user = Estudiante::findOrFail($id);
+        if (Auth::id() != $id) {
             return redirect()->route('home')->with('error', 'No puedes actualizar el perfil de otro usuario.');
         }
 
