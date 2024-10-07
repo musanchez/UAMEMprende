@@ -23,11 +23,11 @@
     <div class="mb-4 d-flex justify-content-between align-items-center">
         <form action="{{ route('emprendimientos.index') }}" method="GET" class="d-flex w-100">
             <input type="text" name="search" class="form-control me-2" placeholder="Buscar por nombre o descripción"
-                value="{{ request()->query('search') }}">
+                value="{{ request('search') }}">
             <select name="category" class="form-control me-2">
                 <option value="">Todas las categorías</option>
                 @foreach($categorias as $categoria)
-                    <option value="{{ $categoria->id }}" {{ request()->query('category') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
+                    <option value="{{ $categoria->id }}" {{ request('category') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
                 @endforeach
             </select>
             <button type="submit" class="btn btn-primary"
@@ -36,7 +36,7 @@
     </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach ($emprendimientos as $emprendimiento)
+        @foreach ($emprendimientosFiltrados as $emprendimiento)
             @if ($emprendimiento->estado_emp && $emprendimiento->estado_emp->nombre === 'VERIFICADO')
                 <div class="col">
                     <div class="card h-100">
