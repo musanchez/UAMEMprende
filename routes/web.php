@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\EmprendimientosController;
 
@@ -29,7 +30,7 @@ use App\Http\Controllers\EstudianteController;
 
 Auth::routes();
 
-Route::get('uamEmprende', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
+Route::get('/', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
