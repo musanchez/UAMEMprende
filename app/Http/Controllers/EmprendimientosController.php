@@ -9,7 +9,11 @@ use App\Models\Categoria;
 use App\Models\EstadoEmp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\decorator\concretos\CategoriaFiltro;
+use App\decorator\concretos\NombreFiltro;
+use App\decorator\BaseEmprendimientoFiltro;
+use App\decorator\EmprendimientoFiltro;
+use App\decorator\EmprendimientoFiltroDecorador;
 
 
 class EmprendimientosController extends Controller
@@ -20,7 +24,7 @@ class EmprendimientosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    /*public function index(Request $request)
     {
         $query = Emprendimiento::query();
 
@@ -43,8 +47,34 @@ class EmprendimientosController extends Controller
         $categorias = Categoria::all();
 
         return view('emprendimientos.index', compact('emprendimientos', 'categorias'));
-    }
+    } 
+    */
 
+    public function index(Request $request)
+    {
+        // Obtenemos todos los emprendimientos
+        $emprendimientos = Emprendimiento::query();
+
+        // Creamos el filtro base
+        $filter = new BaseEmprendimientoFiltro();
+
+        // Aplicamos el filtro por nombre si se proporciona
+        if ($request->filled('search')) {
+            $filter = new NombreFiltro($filter, $request->input('search'));
+        }
+
+        // Aplicamos el filtro por categoría si se selecciona
+        if ($request->filled('category') && $request->category != '') {
+            $filter = new CategoriaFiltro($filter, $request->input('category'));
+        }
+
+        // Finalmente, aplicamos todos los filtros al query de emprendimientos
+        $emprendimientosFiltrados = $filter->filter($emprendimientos)->get();
+
+        $categorias = Categoria::all();
+
+        return view('emprendimientos.index', compact('emprendimientosFiltrados', 'categorias'));
+    }
 
 
     public function misEmprendimientos()
