@@ -25,11 +25,14 @@ use App\Http\Controllers\EmprendimientosController;
 */
 use App\Http\Controllers\PreferenciaController;
 use App\Http\Controllers\EstudianteController;
-
+use App\Http\Controllers\Auth\LoginController;
 
 Auth::routes();
 
-Route::get('uamEmprende', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+Route::get('/', [App\Http\Controllers\EmprendimientosController::class, 'index'])->name('emprendimientos.index');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
