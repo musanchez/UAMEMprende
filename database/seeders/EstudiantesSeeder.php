@@ -15,7 +15,8 @@ class EstudiantesSeeder extends Seeder
      */
     public function run()
     {
-        Estudiante::factory()->create([
+        Estudiante::firstOrCreate(
+            ['cif'=> '00001111'],[
             'nombre' => 'Nancy',
             'apellido' => 'Santeliz',
             'celular' => '868679123', // Ejemplo de celular
@@ -26,5 +27,13 @@ class EstudiantesSeeder extends Seeder
             'carrera_id' => null
             // No es necesario incluir 'admin' ya que es false por defecto en el factory
         ]);
+
+        Estudiante::factory()->count(50)->create([
+            'admin' => 0, // Asegurarse de que todos los estudiantes generados no sean administradores
+        ])->each(function ($estudiante) {
+            // Asignar un `carrera_id` aleatorio entre 1 y 14
+            $estudiante->carrera_id = rand(1, 14);
+            $estudiante->save();
+        });
     }
 }

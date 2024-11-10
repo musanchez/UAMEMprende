@@ -96,3 +96,5 @@ Route::get('/emprendimientos/pendientes', [EmprendimientosController::class, 'pe
 Route::patch('/emprendimientos/{id}/validar', [EmprendimientosController::class, 'validar'])->name('emprendimientos.validar');
 Route::patch('/emprendimientos/{id}/rechazar', [EmprendimientosController::class, 'rechazar'])->name('emprendimientos.rechazar');
 
+Route::get('/estudiantes/exportar', [EstudianteController::class, 'exportarEstudiantes'])->name('estudiantes.exportar');
+
