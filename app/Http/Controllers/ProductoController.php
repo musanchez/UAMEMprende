@@ -30,17 +30,25 @@ class ProductoController extends Controller
         // Validar los datos del formulario
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string|max:255',
-            'imagen' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:1000',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Imagen opcional
             'precio' => 'required|numeric',
-            'oculto' => 'boolean',
+            'oculto' => 'nullable|boolean'
         ]);
+
+        $imagePath = 'productos/logo.png'; // Imagen por defecto
+
+        if ($request->hasFile('imagen')) {
+            $file = $request->file('imagen');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $imagePath = $file->storeAs('productos', $fileName, 'public');
+        }
 
         // Crear el producto vinculado al emprendimiento
         $producto = Producto::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
-            'imagen' => $request->imagen,
+            'imagen' => $imagePath,
             'precio' => $request->precio,
             'emprendimiento_id' => $emprendimiento_id,
             'oculto' => $request->oculto
@@ -68,24 +76,33 @@ class ProductoController extends Controller
 
     public function update(Request $request, Emprendimiento $emprendimiento, Producto $producto)
     {
-        // Validate the request data
+        // Validar los datos del formulario
         $request->validate([
-            'nombre' => 'required',
-            'descripcion' => 'required',
-            'imagen' => 'required',
-            'precio' => 'required'
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:1000',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Imagen opcional
+            'precio' => 'required|numeric',
+            'oculto' => 'nullable|boolean'
         ]);
 
-        // Update the producto
+        // Si se carga una nueva imagen, procesarla
+        if ($request->hasFile('imagen')) {
+            $file = $request->file('imagen');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Generar un nombre único
+            $path = $file->storeAs('productos', $fileName, 'public'); // Guardar en public/productos
+            $producto->imagen = $path; // Actualizar la ruta en la base de datos
+        }
+
+        // Actualizar los demás campos
         $producto->nombre = $request->input('nombre');
         $producto->descripcion = $request->input('descripcion');
-        $producto->imagen = $request->input('imagen');
         $producto->precio = $request->input('precio');
-        $producto->oculto = $request->input('oculto');
+        $producto->oculto = $request->input('oculto', 0); // Por defecto, no oculto si no se envía el valor
         $producto->save();
 
-        // Redirect back to the producto list
-        return redirect()->route('emprendimiento.productos', $emprendimiento->id);
+        // Redirigir a la lista de productos con mensaje de éxito
+        return redirect()->route('emprendimiento.productos', $emprendimiento->id)
+            ->with('success', 'Producto actualizado correctamente.');
     }
 
     public function importarProductos(Request $request, Emprendimiento $emprendimiento)

@@ -5,7 +5,7 @@
     <!-- Encabezado del Emprendimiento con Imagen -->
     <div class="row mb-4 text-center">
         <div class="col">
-            <img src="{{ $emprendimiento->imagen }}" class="img-fluid mb-4" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;">
+            <img src="{{ asset('storage/' . $emprendimiento->imagen) }}" class="img-fluid mb-4" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;">
             <h1 class="display-4" style="background-color: #439FA5; color: white; padding: 10px;"><strong>{{ $emprendimiento->nombre }}</strong></h1>
             <hr style="border: 2.5px solid #000; width: 70%; margin: 0 auto;">
             <br>
@@ -43,7 +43,7 @@
             @if(!$producto->oculto)
                 <div class="col mb-4">
                     <div class="card h-100" style="border: 1px solid #ddd;">
-                        <img src="{{ $producto->imagen }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
+                        <img src="{{ asset('storage/' . $producto->imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
                         <div class="card-body d-flex flex-column" style="background-color: #F0F0F0;">
                             <h5 class="card-title" style="color: #439FA5;">{{ $producto->nombre }}</h5>
                             <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>

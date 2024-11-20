@@ -25,7 +25,7 @@ class ProductosImport implements ToCollection
                 'descripcion' => $row[1],
                 'precio' => $row[2],
                 'emprendimiento_id' => $this->emprendimientoId,
-                'imagen' => 'logo.png',
+                'imagen' => 'productos/logo.png',
             ]);
         }
     }

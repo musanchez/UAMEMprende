@@ -21,8 +21,8 @@
         @foreach ($emprendimiento->productos as $producto)
             <div class="col mb-4">
                 <div class="card h-100">
-                    <!-- Aquí se usa el accessor en el modelo para manejar la imagen predeterminada -->
-                    <img src="{{ $producto->imagen }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
+                    <!-- Mostrar la imagen del producto -->
+                    <img src="{{ asset('storage/' . $producto->imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ $producto->nombre }}</h5>
                         <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>
