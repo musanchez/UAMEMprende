@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Observers\ProductoSubject;
 use App\Observers\EmailObserver;
 use App\Observers\Subject; // Add this line to import the Subject class
+use Maatwebsite\Excel\Facades\Excel; // Add this line to import the Excel facade
+use App\Imports\ProductosImport; // Add this line to import the ProductosImport class
 
 class ProductoController extends Controller
 {
@@ -84,5 +86,16 @@ class ProductoController extends Controller
 
         // Redirect back to the producto list
         return redirect()->route('emprendimiento.productos', $emprendimiento->id);
+    }
+
+    public function importarProductos(Request $request, Emprendimiento $emprendimiento)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new ProductosImport($emprendimiento->id), $request->file('archivo'));
+
+        return redirect()->back()->with('success', 'Productos importados correctamente.');
     }
 }

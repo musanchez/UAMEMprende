@@ -17,6 +17,11 @@ class Producto extends Model
 
     use HasFactory;
 
+    public function getImagenAttribute($value)
+    {
+        return $value ?? asset('logo.png');
+    }
+
     protected $casts = [
         'oculto' => 'boolean',
     ];

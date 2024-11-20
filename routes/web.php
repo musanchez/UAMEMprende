@@ -26,6 +26,7 @@ use App\Http\Controllers\EmprendimientosController;
 */
 use App\Http\Controllers\PreferenciaController;
 use App\Http\Controllers\EstudianteController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\Auth\LoginController;
 
 Auth::routes();
@@ -98,3 +99,4 @@ Route::patch('/emprendimientos/{id}/rechazar', [EmprendimientosController::class
 
 Route::get('/estudiantes/exportar', [EstudianteController::class, 'exportarEstudiantes'])->name('estudiantes.exportar');
 
+Route::post('/emprendimientos/{emprendimiento}/productos/importar', [ProductoController::class, 'importarProductos'])->name('importar.productos');
