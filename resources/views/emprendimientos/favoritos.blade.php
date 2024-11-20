@@ -11,7 +11,8 @@
         @foreach ($emprendimientos as $emprendimiento)
         <div class="col">
             <div class="card h-100">
-                <img src="{{ $emprendimiento->imagen }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
+                <!-- Actualizamos la ruta para cargar la imagen desde el almacenamiento -->
+                <img src="{{ asset('storage/' . $emprendimiento->imagen) }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>
                     <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($emprendimiento->descripcion, 100, $end='...') }}</p>

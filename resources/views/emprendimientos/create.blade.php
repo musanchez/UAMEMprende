@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Crear Emprendimiento') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('guardar.emprendimiento') }}">
+                    <form method="POST" action="{{ route('guardar.emprendimiento') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-3">
@@ -32,8 +32,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="imagen" class="form-label">{{ __('URL de la Imagen') }}</label>
-                            <input id="imagen" type="url" class="form-control @error('imagen') is-invalid @enderror" name="imagen" value="{{ old('imagen') }}" required>
+                            <label for="imagen" class="form-label">{{ __('Imagen del Producto') }}</label>
+                            <!-- Aseguramos que el input es de tipo file -->
+                            <input id="imagen" type="file" class="form-control @error('imagen') is-invalid @enderror" name="imagen" accept="image/*">
                             @error('imagen')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

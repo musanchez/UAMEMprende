@@ -111,7 +111,7 @@ class EmprendimientosController extends Controller
     }
 
     public function pendientes(Request $request)
-    {
+        {
         $search = $request->query('search');
         $category = $request->query('category');
 
@@ -136,6 +136,13 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.showPendientes', compact('emprendimientos', 'categorias'));
     }
 
+    public function show(Emprendimiento $emprendimiento)
+    {
+        $productos = $emprendimiento->productos;
+        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
+        //
+    }
+
     public function create()
     {
         $categorias = Categoria::all();
@@ -144,58 +151,85 @@ class EmprendimientosController extends Controller
 
     public function store(Request $request)
     {
-        //$estadoPendienteId = DB::table('estados_emps')->where('nombre', 'PENDIENTE')->value('id');
-        
-        // Validar y guardar los datos
+        // Validar los datos del formulario
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Imagen opcional
             'categoria_id' => 'required|integer|exists:categorias,id',
         ]);
 
-        // Obtener el ID del usuario autenticado
-        $emprendedor_id = Auth::id();
+        $imagePath = null;
 
-        // Asignar el ID del usuario autenticado al array de datos validados
-        $validatedData['emprendedor_id'] = $emprendedor_id;
+        // Procesar la imagen si se ha subido
+        if ($request->hasFile('imagen')) {
+            $file = $request->file('imagen');
+            $fileName = time() . '_arte_emprendimiento_' . $file->getClientOriginalName();
+            $imagePath = $file->storeAs('emprendimientos', $fileName, 'public');
+        } else {
+            // Asignar una imagen predeterminada si no se sube ninguna
+            $imagePath = 'emprendimientos/default.jpg';
+        }
 
-        // Crear el emprendimiento en la base de datos
-        $emp = Emprendimiento::create($validatedData);
+        // Crear el emprendimiento con la imagen procesada
+        $emprendimiento = Emprendimiento::create([
+            'nombre' => $validatedData['nombre'],
+            'descripcion' => $validatedData['descripcion'],
+            'imagen' => $imagePath, // Usa la ruta procesada o la predeterminada
+            'categoria_id' => $validatedData['categoria_id'],
+            'emprendedor_id' => Auth::id(),
+        ]);
 
-
-        return redirect()->route('emprendimientos.index', $emp);
+        // Redirigir con mensaje de éxito
+        return redirect()->route('emprendimientos.index')
+            ->with('success', 'Emprendimiento creado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Emprendimiento $emprendimiento)
-    {
-        $productos = $emprendimiento->productos;
-        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function update(int $id, Request $request)
     {
+        // Buscar el emprendimiento por ID
         $emprendimiento = Emprendimiento::findOrFail($id);
 
+        // Validar los datos de entrada
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'required|string',
-            'categoria_id' => 'required|integer|exists:categorias,id'
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Imagen opcional
+            'categoria_id' => 'required|integer|exists:categorias,id',
         ]);
 
+        // Manejo de la imagen cargada o uso de la predeterminada
+        if ($request->hasFile('imagen')) {
+            // Subir nueva imagen
+            $file = $request->file('imagen');
+            $fileName = time() . '_emprendimiento_' . str_replace(' ', '_', $validatedData['nombre']) . '.' . $file->getClientOriginalExtension();
+            $imagePath = $file->storeAs('emprendimientos', $fileName, 'public');
+            $validatedData['imagen'] = $imagePath;
+
+            // Eliminar la imagen anterior si existía y no era la predeterminada
+            if ($emprendimiento->imagen && $emprendimiento->imagen !== 'emprendimientos/default.jpg') {
+                Storage::disk('public')->delete($emprendimiento->imagen);
+            }
+        } else {
+            // Asignar la imagen predeterminada si no se subió una nueva
+            $validatedData['imagen'] = $emprendimiento->imagen ?? 'emprendimientos/default.jpg';
+        }
+
+        // Actualizar los datos del emprendimiento
         $emprendimiento->update($validatedData);
 
+        // Redirigir con mensaje de éxito
         return redirect()->route('misEmprendimientos')
-            ->with('success', 'Emprendimiento actualizado correctamente');
+            ->with('success', 'Emprendimiento actualizado correctamente.');
     }
+
+
+
+
 
     // EmprendimientoController.php
 

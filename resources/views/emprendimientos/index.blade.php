@@ -40,7 +40,7 @@
         @if ($emprendimiento->estado_emp && $emprendimiento->estado_emp->nombre === 'VERIFICADO')
         <div class="col">
             <div class="card h-100">
-                <img src="{{ $emprendimiento->imagen }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}"
+                <img src="{{ asset('storage/' . $emprendimiento->imagen) }}" class="card-img-top" alt="{{ $emprendimiento->nombre }}"
                     style="width: 100%; height: 200px; object-fit: cover;">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ $emprendimiento->nombre }}</h5>

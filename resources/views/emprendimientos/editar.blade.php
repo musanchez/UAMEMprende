@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Editar Emprendimiento') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('actualizar.emprendimiento', $emprendimiento->id) }}">
+                    <form method="POST" action="{{ route('actualizar.emprendimiento', $emprendimiento->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -32,9 +32,26 @@
                             @enderror
                         </div>
 
+                        <!-- Imagen del Emprendimiento -->
                         <div class="mb-3">
-                            <label for="imagen" class="form-label">{{ __('URL de la Imagen') }}</label>
-                            <input id="imagen" type="url" class="form-control @error('imagen') is-invalid @enderror" name="imagen" value="{{ $emprendimiento->imagen }}" required>
+                            <label for="imagen" class="form-label">{{ __('Imagen del Emprendimiento') }}</label>
+                            <div id="image-preview" class="mb-3">
+                                @if ($emprendimiento->imagen && $emprendimiento->imagen !== 'productos/logo.png')
+                                    <img src="{{ asset('storage/' . $emprendimiento->imagen) }}" alt="{{ $emprendimiento->nombre }}" class="img-fluid mb-2" style="max-height: 200px;">
+                                    <button type="button" class="btn btn-danger btn-sm" id="remove-image">{{ __('Quitar imagen') }}</button>
+                                @endif
+                            </div>
+                            <input 
+                                id="imagen" 
+                                type="file" 
+                                class="form-control @error('imagen') is-invalid @enderror" 
+                                name="imagen" 
+                                accept="image/*" 
+                                style="{{ $emprendimiento->imagen ? 'background-color: #d6d6d6;' : '' }}" 
+                                {{ $emprendimiento->imagen ? 'disabled' : '' }}>
+                            <small id="file-label" class="form-text text-muted">
+                                {{ $emprendimiento->imagen ? basename($emprendimiento->imagen) : 'Ningún archivo seleccionado' }}
+                            </small>
                             @error('imagen')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -58,42 +75,54 @@
                         </div>
 
                         <div class="mb-3">
-                            <br>
-                            <br>
-                            <button type="submit" class="btn btn-primary custom-btn">{{ __('Actualizar Emprendimiento') }}</button> <!-- Aplicación de la clase 'custom-btn' -->
+                            <button type="submit" class="btn btn-primary custom-btn">{{ __('Actualizar Emprendimiento') }}</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    @if ($errors->any())
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-8">
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    </div>
-    @endif
 </div>
 
-<!-- Agrega este estilo CSS al final del archivo o en tu archivo CSS principal -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('imagen');
+        const fileLabel = document.getElementById('file-label');
+        const removeButton = document.getElementById('remove-image');
+        const previewContainer = document.getElementById('image-preview');
+
+        // Cuando se selecciona un archivo
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                fileLabel.textContent = fileName;
+                fileInput.style.backgroundColor = '#d6d6d6';
+                fileInput.disabled = true;
+            }
+        });
+
+        // Manejar la acción de quitar imagen
+        if (removeButton) {
+            removeButton.addEventListener('click', function () {
+                previewContainer.innerHTML = ''; // Quitar la imagen del preview
+                fileInput.disabled = false;
+                fileInput.style.backgroundColor = '';
+                fileLabel.textContent = 'Ningún archivo seleccionado';
+            });
+        }
+    });
+</script>
+
 <style>
     .custom-btn {
-        background-color: #439FA5; /* Color de fondo personalizado */
-        border-color: #439FA5; /* Color del borde */
+        background-color: #439FA5;
+        border-color: #439FA5;
+        color: white;
     }
 
     .custom-btn:hover {
-        background-color: #367f85; /* Color de fondo ligeramente más oscuro al pasar el cursor */
+        background-color: #367f85;
         border-color: #367f85;
     }
 </style>
-
 @endsection
