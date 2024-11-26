@@ -32,7 +32,7 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string|max:1000',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Imagen opcional
-            'precio' => 'required|numeric',
+            'precio' => 'required|numeric|min:0',
             'oculto' => 'nullable|boolean'
         ]);
 
@@ -81,16 +81,24 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string|max:1000',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Imagen opcional
-            'precio' => 'required|numeric',
+            'precio' => 'required|numeric|min:0',
             'oculto' => 'nullable|boolean'
         ]);
 
-        // Si se carga una nueva imagen, procesarla
+        // Verificar si hay una nueva imagen y procesarla
         if ($request->hasFile('imagen')) {
+            // Guardar la nueva imagen
             $file = $request->file('imagen');
             $fileName = time() . '_' . $file->getClientOriginalName(); // Generar un nombre único
             $path = $file->storeAs('productos', $fileName, 'public'); // Guardar en public/productos
-            $producto->imagen = $path; // Actualizar la ruta en la base de datos
+            
+            // Eliminar la imagen previa si existe
+            if ($producto->imagen) {
+                \Storage::disk('public')->delete($producto->imagen);
+            }
+
+            // Actualizar la ruta de la nueva imagen en la base de datos
+            $producto->imagen = $path;
         }
 
         // Actualizar los demás campos
@@ -104,6 +112,7 @@ class ProductoController extends Controller
         return redirect()->route('emprendimiento.productos', $emprendimiento->id)
             ->with('success', 'Producto actualizado correctamente.');
     }
+
 
     public function importarProductos(Request $request, Emprendimiento $emprendimiento)
     {

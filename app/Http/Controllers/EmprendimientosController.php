@@ -198,25 +198,31 @@ class EmprendimientosController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Imagen opcional
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'categoria_id' => 'required|integer|exists:categorias,id',
+            'quitar_imagen' => 'nullable|boolean',
         ]);
 
-        // Manejo de la imagen cargada o uso de la predeterminada
+        // Manejo de la eliminación de la imagen
+        if ($request->has('quitar_imagen') && $request->input('quitar_imagen') === "1") {
+            if ($emprendimiento->imagen && $emprendimiento->imagen !== 'emprendimientos/default.jpg') {
+                \Storage::disk('public')->delete($emprendimiento->imagen); // Eliminar la imagen
+                $validatedData['imagen'] = 'emprendimientos/default.jpg'; // Establecer la predeterminada
+            }
+        }
+
+        // Manejo de la nueva imagen cargada
         if ($request->hasFile('imagen')) {
-            // Subir nueva imagen
+            // Subir la nueva imagen
             $file = $request->file('imagen');
             $fileName = time() . '_emprendimiento_' . str_replace(' ', '_', $validatedData['nombre']) . '.' . $file->getClientOriginalExtension();
             $imagePath = $file->storeAs('emprendimientos', $fileName, 'public');
             $validatedData['imagen'] = $imagePath;
 
-            // Eliminar la imagen anterior si existía y no era la predeterminada
+            // Eliminar la imagen anterior si existe y no es la predeterminada
             if ($emprendimiento->imagen && $emprendimiento->imagen !== 'emprendimientos/default.jpg') {
-                Storage::disk('public')->delete($emprendimiento->imagen);
+                \Storage::disk('public')->delete($emprendimiento->imagen);
             }
-        } else {
-            // Asignar la imagen predeterminada si no se subió una nueva
-            $validatedData['imagen'] = $emprendimiento->imagen ?? 'emprendimientos/default.jpg';
         }
 
         // Actualizar los datos del emprendimiento
@@ -226,6 +232,8 @@ class EmprendimientosController extends Controller
         return redirect()->route('misEmprendimientos')
             ->with('success', 'Emprendimiento actualizado correctamente.');
     }
+
+
 
 
 
