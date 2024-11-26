@@ -31,24 +31,19 @@
             padding: 3px 6px;
             border-radius: 50%;
             margin-left: 5px;
-            /* Espacio entre la insignia y el enlace */
         }
 
         .admin-badge-container {
             display: flex;
             align-items: center;
             margin-left: auto;
-            /* Empujar hacia la derecha */
             padding-right: 20px;
-            /* Añadir espacio a la derecha */
         }
 
         .admin-badge-container .admin-badge {
             margin-left: 5px;
-            /* Espacio entre la insignia y el enlace */
         }
     </style>
-    <!-- Otros elementos del encabezado -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
@@ -123,6 +118,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('crear.emprendimiento') }}">Crear Emprendimiento</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('pedidos.index') }}">Mis Pedidos</a>
                             </li>
                         @endif
                     @else

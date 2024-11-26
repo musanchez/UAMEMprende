@@ -28,7 +28,7 @@ use App\Http\Controllers\PreferenciaController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\Auth\LoginController;
-
+use App\Http\Controllers\PedidoController;
 Auth::routes();
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -100,3 +100,9 @@ Route::patch('/emprendimientos/{id}/rechazar', [EmprendimientosController::class
 Route::get('/estudiantes/exportar', [EstudianteController::class, 'exportarEstudiantes'])->name('estudiantes.exportar');
 
 Route::post('/emprendimientos/{emprendimiento}/productos/importar', [ProductoController::class, 'importarProductos'])->name('importar.productos');
+
+
+Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
+Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+Route::patch('/pedidos/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
+Route::get('/pedidos/exportar-pdf', [PedidoController::class, 'exportarPDF'])->name('pedidos.exportar.pdf');

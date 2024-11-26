@@ -13,6 +13,40 @@
         </div>
     </div>
 
+    <!-- Botón para Crear Pedido -->
+    @auth
+        @if (auth()->user()->status)
+            <div class="text-center mb-4">
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#crearPedidoForm" aria-expanded="false" aria-controls="crearPedidoForm" style="background-color: #439FA5; border-color: #439FA5;">
+                    Crear Pedido
+                </button>
+            </div>
+
+            <!-- Formulario para Crear Pedido (Desplegable) -->
+            <div class="collapse mb-5" id="crearPedidoForm">
+                <div class="card card-body" style="border: 2px solid #439FA5; border-radius: 8px; background-color: #F0F0F0;">
+                    <form action="{{ route('pedidos.store') }}" method="POST">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <label for="mensaje" class="form-label">Detalles del pedido:</label>
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="3" required></textarea>
+                            <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
+                            <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Enviar Pedido</button>
+                    </form>
+                </div>
+            </div>
+        @else
+            <p class="text-muted text-center">Tu cuenta ha sido deshabilitada. No puedes crear un pedido.</p>
+        @endif
+    @endauth
+
+    <!-- Mostrar mensaje de autenticación -->
+    @guest
+        <p class="text-muted text-center">Inicia sesión para crear un pedido.</p>
+    @endguest
+
     <!-- Información detallada del Emprendedor -->
     <div class="row mb-5">
         <div class="col-md-8 offset-md-2">
@@ -24,7 +58,6 @@
                     <p><strong>Nombre:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
                     <p><strong>Email:</strong> {{ $emprendimiento->emprendedor->email }}</p>
                     <p><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
-                    <!-- Agrega más campos según sea necesario -->
                 </div>
             </div>
         </div>
@@ -48,7 +81,6 @@
                             <h5 class="card-title" style="color: #439FA5;">{{ $producto->nombre }}</h5>
                             <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>
                             <p class="card-text"><strong>Precio:</strong> C${{ $producto->precio }}</p>
-                            <!-- No agregamos el botón "Ver más" ya que quieres mostrar todos los detalles aquí -->
                         </div>
                     </div>
                 </div>
@@ -59,7 +91,7 @@
             </div>
         @endforelse
     </div>
-
+</div>
     <!-- Sección de Comentarios -->
     <div class="row mb-5">
         <div class="col-md-8 offset-md-2">
@@ -149,37 +181,6 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección de Calificación -->
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header" style="background-color: #439FA5;">
-                    <h2 class="text-white">Calificación</h2>
-                </div>
-                <div class="card-body" style="border: 2px solid #439FA5; border-radius: 8px; background-color: #F0F0F0;">
-                    <!-- Formulario para añadir calificación -->
-                    @auth
-                        <form action="{{ route('calificar.emprendimiento' )}}" method="POST">
-                            @csrf
-                            <div class="form-group mb-3">
-                                <label for="calificacion" class="form-label">Calificación (0 al 5):</label>
-                                <input type="number" class="form-control" id="calificacion" name="calificacion" min="0" max="5" required>
-                                <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
-                                <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Enviar Calificación</button>
-                        </form>
-                    @endauth
-
-                    <!-- Mostrar mensaje de autenticación -->
-                    @guest
-                        <p class="text-muted">Inicia sesión para dejar una calificación.</p>
-                    @endguest
                 </div>
             </div>
         </div>
