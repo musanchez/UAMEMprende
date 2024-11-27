@@ -91,6 +91,25 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.productosEmprendimiento', compact('emprendimiento', 'productos'));
     }
 
+    public function buscarProductos($id, Request $request)
+    {
+        $emprendimiento = Emprendimiento::findOrFail($id);
+
+        // Obtener los productos filtrados
+        $search = $request->query('search');
+        $productos = $emprendimiento->productos()
+            ->when($search, function ($query, $search) {
+                $query->where('nombre', 'LIKE', "%{$search}%")
+                    ->orWhere('descripcion', 'LIKE', "%{$search}%");
+            })
+            ->where('oculto', false) // Excluir productos ocultos
+            ->get();
+
+        // Retornar la misma vista con los datos actualizados
+        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
+    }
+
+
     public function showEmprendimientoEditScreen($id)
     {
         $emprendimiento = Emprendimiento::findOrFail($id);

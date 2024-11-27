@@ -25,6 +25,7 @@
                         <th>Emprendimiento</th>
                         <th>Solicitante</th>
                         <th>Estado</th>
+                        <th>Mensaje</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -43,6 +44,7 @@
                                     {{ ucfirst($pedido->estado) }}
                                 </span>
                             </td>
+                            <td>{{ $pedido->mensaje }}</td>
                             <td class="text-center">
                                 @if($pedido->estado == 'pendiente')
                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updatePedidoModal{{ $pedido->id }}" style="background-color: #439FA5; border-color: #439FA5; border-radius: 8px;">

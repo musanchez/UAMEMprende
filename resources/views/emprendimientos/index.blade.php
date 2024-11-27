@@ -19,21 +19,31 @@
 <div class="container">
     <h2 class="mb-4" style="text-align: center">Listado de Emprendimientos</h2>
 
-    <!-- Barra de búsqueda y filtro de categorías -->
-    <div class="mb-4 d-flex justify-content-between align-items-center">
-        <form action="{{ route('emprendimientos.index') }}" method="GET" class="d-flex w-100">
-            <input type="text" name="search" class="form-control me-2" placeholder="Buscar por nombre o descripción"
-                value="{{ request()->query('search') }}">
-            <select name="category" class="form-control me-2">
-                <option value="">Todas las categorías</option>
-                @foreach($categorias as $categoria)
-                <option value="{{ $categoria->id }}" {{ request()->query('category') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="btn btn-primary"
-                style="background-color: #439FA5; border-color: #439FA5;">Buscar</button>
+    <div class="mb-4">
+        <form action="{{ route('emprendimientos.index') }}" method="GET" class="row g-2 align-items-center">
+            <div class="col">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o descripción"
+                    value="{{ request()->query('search') }}" style="height: 40px;">
+            </div>
+            <div class="col">
+                <select name="category" class="form-control" style="height: 40px;">
+                    <option value="">Todas las categorías</option>
+                    @foreach($categorias as $categoria)
+                    <option value="{{ $categoria->id }}" {{ request()->query('category') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-auto d-flex align-items-center">
+                <button type="submit" class="btn btn-primary mx-2" style="background-color: #439FA5; border-color: #439FA5; height: 40px;">
+                    Buscar
+                </button>
+                <a href="{{ route('emprendimientos.index') }}" class="btn mx-2" style="background-color: #FFD700; color: black; border: 1px solid #FFC107; height: 40px;">
+                    Limpiar Filtros
+                </a>
+            </div>
         </form>
     </div>
+
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach ($emprendimientosFiltrados as $emprendimiento)

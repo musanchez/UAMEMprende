@@ -31,7 +31,7 @@ class ProductoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string|max:1000',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Imagen opcional
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Imagen opcional
             'precio' => 'required|numeric|min:0',
             'oculto' => 'nullable|boolean'
         ]);
@@ -80,7 +80,7 @@ class ProductoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string|max:1000',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Imagen opcional
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Imagen opcional
             'precio' => 'required|numeric|min:0',
             'oculto' => 'nullable|boolean'
         ]);

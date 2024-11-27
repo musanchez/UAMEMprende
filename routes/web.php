@@ -106,3 +106,6 @@ Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store
 Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 Route::patch('/pedidos/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
 Route::get('/pedidos/exportar-pdf', [PedidoController::class, 'exportarPDF'])->name('pedidos.exportar.pdf');
+
+Route::get('/emprendimientos/{id}/buscar', [EmprendimientosController::class, 'buscarProductos'])
+    ->name('emprendimientos.buscarProductos');

@@ -21,7 +21,7 @@ class PedidoController extends Controller
         ]);
 
         $pedido = Pedido::create($validated);
-        Pedido::create($validated);
+        //Pedido::create($validated);
 
         $emprendimiento = Emprendimiento::find($validated['emprendimiento_id']);
         Mail::to($emprendimiento->emprendedor->email)->send(new PedidoCreado($pedido));

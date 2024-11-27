@@ -15,10 +15,10 @@
 
     <!-- Botón para Crear Pedido -->
     @auth
-        @if (auth()->user()->status)
+        @if (auth()->user()->id !== $emprendimiento->emprendedor_id)
             <div class="text-center mb-4">
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#crearPedidoForm" aria-expanded="false" aria-controls="crearPedidoForm" style="background-color: #439FA5; border-color: #439FA5;">
-                    Crear Pedido
+                    Solicitar Pedido
                 </button>
             </div>
 
@@ -37,15 +37,13 @@
                     </form>
                 </div>
             </div>
-        @else
-            <p class="text-muted text-center">Tu cuenta ha sido deshabilitada. No puedes crear un pedido.</p>
         @endif
     @endauth
 
-    <!-- Mostrar mensaje de autenticación -->
     @guest
-        <p class="text-muted text-center">Inicia sesión para crear un pedido.</p>
+        <p class="text-muted text-center">Inicia sesión para solicitar un pedido.</p>
     @endguest
+
 
     <!-- Información detallada del Emprendedor -->
     <div class="row mb-5">
@@ -68,6 +66,26 @@
         <div class="col text-center">
             <h2 class="mb-4" style="color: #000; font-size: 2.5rem;">Productos</h2>
             <hr style="border: 2.0px solid #000; width: 50%; margin: 0 auto;">
+        </div>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="row mb-4">
+        <div class="col-md-8 offset-md-2">
+            <form action="{{ route('emprendimientos.buscarProductos', $emprendimiento->id) }}" method="GET" class="row g-2 align-items-center">
+                <div class="col">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o descripción..."
+                        value="{{ request()->query('search') }}" style="height: 40px;">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mx-2" style="background-color: #439FA5; border-color: #439FA5; height: 40px;">
+                        Buscar
+                    </button>
+                    <a href="{{ route('emprendimientos.buscarProductos', $emprendimiento->id) }}" class="btn mx-2" style="background-color: #FFD700; color: black; border: 1px solid #FFC107; height: 40px;">
+                        Limpiar Filtros
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 
