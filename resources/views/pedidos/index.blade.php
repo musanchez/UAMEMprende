@@ -14,6 +14,25 @@
     <!-- Mensaje aclaratorio sobre la exportación -->
     <p class="text-muted text-center mb-4">Nota: Solo se exportarán los pedidos en estado <strong>pendiente</strong>.</p>
 
+    <!-- Dropdown de filtro y botón de limpiar filtros centrados -->
+    <div class="d-flex justify-content-center mb-4">
+        <form action="{{ route('pedidos.index') }}" method="GET" class="d-flex align-items-center">
+            <select name="estado" class="form-select me-2" style="width: 200px;">
+                <option value="">Todos los Estados</option>
+                <option value="pendiente" {{ request()->query('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                <option value="aceptado" {{ request()->query('estado') == 'aceptado' ? 'selected' : '' }}>Aceptado</option>
+                <option value="rechazado" {{ request()->query('estado') == 'rechazado' ? 'selected' : '' }}>Rechazado</option>
+            </select>
+            <button type="submit" class="btn btn-primary me-2" style="background-color: #439FA5; border-color: #439FA5;">
+                Filtrar
+            </button>
+            <a href="{{ route('pedidos.index') }}" class="btn btn-secondary" style="background-color: #FFD700; color: black; border: 1px solid #FFC107;">
+                Limpiar Filtros
+            </a>
+        </form>
+    </div>
+
+
     @if($pedidos->isEmpty())
         <div class="alert alert-info text-center">No tienes pedidos pendientes.</div>
     @else

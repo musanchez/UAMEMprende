@@ -30,14 +30,26 @@ class PedidoController extends Controller
         return redirect()->back()->with('success', 'Pedido enviado exitosamente. El emprendedor revisará tu solicitud.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $pedidos = Pedido::whereHas('emprendimiento', function($query) {
-            $query->where('emprendedor_id', auth()->id());
-        })->get();
+        // Obtenemos el estado del filtro desde la solicitud
+        $estado = $request->query('estado');
 
+        // Filtramos los pedidos según el estado
+        $query = Pedido::whereHas('emprendimiento', function($query) {
+            $query->where('emprendedor_id', auth()->id());
+        });
+
+        if (!empty($estado)) {
+            $query->where('estado', $estado);
+        }
+
+        $pedidos = $query->get();
+
+        // Retornamos la vista con los pedidos filtrados
         return view('pedidos.index', compact('pedidos'));
     }
+
 
     public function update(Request $request, Pedido $pedido)
     {
