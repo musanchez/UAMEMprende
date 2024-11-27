@@ -17,10 +17,10 @@ class EstudiantesSeeder extends Seeder
     {
         Estudiante::firstOrCreate(
             ['cif'=> '00001111'],[
-            'nombre' => 'Nancy',
-            'apellido' => 'Santeliz',
+            'nombre' => 'MarcosAdmin',
+            'apellido' => 'Sanchez',
             'celular' => '868679123', // Ejemplo de celular
-            'email' => 'nsanteliz@uamv.edu.ni',
+            'email' => 'musanchez192001@gmail.com',
             'cif' => '00001111',
             'password' => Hash::make('123123123'), // Cifra la contraseña 'password'
             'admin' => '1',
