@@ -9,7 +9,11 @@ use App\Models\Categoria;
 use App\Models\EstadoEmp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\decorator\concretos\CategoriaFiltro;
+use App\decorator\concretos\NombreFiltro;
+use App\decorator\BaseEmprendimientoFiltro;
+use App\decorator\EmprendimientoFiltro;
+use App\decorator\EmprendimientoFiltroDecorador;
 
 
 class EmprendimientosController extends Controller
@@ -20,7 +24,7 @@ class EmprendimientosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    /*public function index(Request $request)
     {
         $query = Emprendimiento::query();
 
@@ -43,8 +47,34 @@ class EmprendimientosController extends Controller
         $categorias = Categoria::all();
 
         return view('emprendimientos.index', compact('emprendimientos', 'categorias'));
-    }
+    } 
+    */
 
+    public function index(Request $request)
+    {
+        // Obtenemos todos los emprendimientos
+        $emprendimientos = Emprendimiento::query();
+
+        // Creamos el filtro base
+        $filter = new BaseEmprendimientoFiltro();
+
+        // Aplicamos el filtro por nombre si se proporciona
+        if ($request->filled('search')) {
+            $filter = new NombreFiltro($filter, $request->input('search'));
+        }
+
+        // Aplicamos el filtro por categoría si se selecciona
+        if ($request->filled('category') && $request->category != '') {
+            $filter = new CategoriaFiltro($filter, $request->input('category'));
+        }
+
+        // Finalmente, aplicamos todos los filtros al query de emprendimientos
+        $emprendimientosFiltrados = $filter->filter($emprendimientos)->get();
+
+        $categorias = Categoria::all();
+
+        return view('emprendimientos.index', compact('emprendimientosFiltrados', 'categorias'));
+    }
 
 
     public function misEmprendimientos()
@@ -60,6 +90,25 @@ class EmprendimientosController extends Controller
         $productos = $emprendimiento->productos;
         return view('emprendimientos.productosEmprendimiento', compact('emprendimiento', 'productos'));
     }
+
+    public function buscarProductos($id, Request $request)
+    {
+        $emprendimiento = Emprendimiento::findOrFail($id);
+
+        // Obtener los productos filtrados
+        $search = $request->query('search');
+        $productos = $emprendimiento->productos()
+            ->when($search, function ($query, $search) {
+                $query->where('nombre', 'LIKE', "%{$search}%")
+                    ->orWhere('descripcion', 'LIKE', "%{$search}%");
+            })
+            ->where('oculto', false) // Excluir productos ocultos
+            ->get();
+
+        // Retornar la misma vista con los datos actualizados
+        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
+    }
+
 
     public function showEmprendimientoEditScreen($id)
     {
@@ -81,7 +130,7 @@ class EmprendimientosController extends Controller
     }
 
     public function pendientes(Request $request)
-    {
+        {
         $search = $request->query('search');
         $category = $request->query('category');
 
@@ -106,6 +155,13 @@ class EmprendimientosController extends Controller
         return view('emprendimientos.showPendientes', compact('emprendimientos', 'categorias'));
     }
 
+    public function show(Emprendimiento $emprendimiento)
+    {
+        $productos = $emprendimiento->productos;
+        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
+        //
+    }
+
     public function create()
     {
         $categorias = Categoria::all();
@@ -114,58 +170,93 @@ class EmprendimientosController extends Controller
 
     public function store(Request $request)
     {
-        //$estadoPendienteId = DB::table('estados_emps')->where('nombre', 'PENDIENTE')->value('id');
-        
-        // Validar y guardar los datos
+        // Validar los datos del formulario
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Imagen opcional
             'categoria_id' => 'required|integer|exists:categorias,id',
         ]);
 
-        // Obtener el ID del usuario autenticado
-        $emprendedor_id = Auth::id();
+        $imagePath = null;
 
-        // Asignar el ID del usuario autenticado al array de datos validados
-        $validatedData['emprendedor_id'] = $emprendedor_id;
+        // Procesar la imagen si se ha subido
+        if ($request->hasFile('imagen')) {
+            $file = $request->file('imagen');
+            $fileName = time() . '_arte_emprendimiento_' . $file->getClientOriginalName();
+            $imagePath = $file->storeAs('emprendimientos', $fileName, 'public');
+        } else {
+            // Asignar una imagen predeterminada si no se sube ninguna
+            $imagePath = 'emprendimientos/default.jpg';
+        }
 
-        // Crear el emprendimiento en la base de datos
-        $emp = Emprendimiento::create($validatedData);
+        // Crear el emprendimiento con la imagen procesada
+        $emprendimiento = Emprendimiento::create([
+            'nombre' => $validatedData['nombre'],
+            'descripcion' => $validatedData['descripcion'],
+            'imagen' => $imagePath, // Usa la ruta procesada o la predeterminada
+            'categoria_id' => $validatedData['categoria_id'],
+            'emprendedor_id' => Auth::id(),
+        ]);
 
-
-        return redirect()->route('emprendimientos.index', $emp);
+        // Redirigir con mensaje de éxito
+        return redirect()->route('emprendimientos.index')
+            ->with('success', 'Emprendimiento creado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Emprendimiento $emprendimiento)
-    {
-        $productos = $emprendimiento->productos;
-        return view('emprendimientos.show', compact('emprendimiento', 'productos'));
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function update(int $id, Request $request)
     {
+        // Buscar el emprendimiento por ID
         $emprendimiento = Emprendimiento::findOrFail($id);
 
+        // Validar los datos de entrada
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            'imagen' => 'required|string',
-            'categoria_id' => 'required|integer|exists:categorias,id'
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'categoria_id' => 'required|integer|exists:categorias,id',
+            'quitar_imagen' => 'nullable|boolean',
         ]);
 
+        // Manejo de la eliminación de la imagen
+        if ($request->has('quitar_imagen') && $request->input('quitar_imagen') === "1") {
+            if ($emprendimiento->imagen && $emprendimiento->imagen !== 'emprendimientos/default.jpg') {
+                \Storage::disk('public')->delete($emprendimiento->imagen); // Eliminar la imagen
+                $validatedData['imagen'] = 'emprendimientos/default.jpg'; // Establecer la predeterminada
+            }
+        }
+
+        // Manejo de la nueva imagen cargada
+        if ($request->hasFile('imagen')) {
+            // Subir la nueva imagen
+            $file = $request->file('imagen');
+            $fileName = time() . '_emprendimiento_' . str_replace(' ', '_', $validatedData['nombre']) . '.' . $file->getClientOriginalExtension();
+            $imagePath = $file->storeAs('emprendimientos', $fileName, 'public');
+            $validatedData['imagen'] = $imagePath;
+
+            // Eliminar la imagen anterior si existe y no es la predeterminada
+            if ($emprendimiento->imagen && $emprendimiento->imagen !== 'emprendimientos/default.jpg') {
+                \Storage::disk('public')->delete($emprendimiento->imagen);
+            }
+        }
+
+        // Actualizar los datos del emprendimiento
         $emprendimiento->update($validatedData);
 
+        // Redirigir con mensaje de éxito
         return redirect()->route('misEmprendimientos')
-            ->with('success', 'Emprendimiento actualizado correctamente');
+            ->with('success', 'Emprendimiento actualizado correctamente.');
     }
+
+
+
+
+
+
 
     // EmprendimientoController.php
 

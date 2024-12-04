@@ -22,6 +22,11 @@
         </div>
     </form>
 
+    <!-- Botón para exportar a Excel -->
+    <div class="mb-4">
+        <a href="{{ route('estudiantes.exportar') }}" class="btn btn-success">Exportar a Excel</a>
+    </div>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -44,7 +49,7 @@
                     <td>{{ $usuario->email }}</td>
                     <td>
                         <button type="button" class="btn {{ $usuario->status ? 'btn-danger' : 'btn-success' }}"
-                                onclick="toggleStatus({{ $usuario->id }}, this)">
+                            onclick="toggleStatus('{{ $usuario->id }}', this)">
                             {{ $usuario->status ? 'Desactivar' : 'Activar' }}
                         </button>
                     </td>
@@ -53,13 +58,12 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
 <script>
     function toggleStatus(userId, button) {
         const url = button.classList.contains('btn-danger') ? `{{ route('estudiantes.desactivar', ':id') }}` : `{{ route('estudiantes.activar', ':id') }}`;
-        const method = button.classList.contains('btn-danger') ? 'POST' : 'POST';
+        const method = 'POST';
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
 

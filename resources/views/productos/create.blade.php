@@ -8,12 +8,13 @@
                 <div class="card-header">{{ __('Crear Producto') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('crear.producto.store', $emprendimiento->id) }}">
+                    <!-- Aseguramos que enctype está presente -->
+                    <form method="POST" action="{{ route('crear.producto.store', $emprendimiento->id) }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-3">
                             <label for="nombre" class="form-label">{{ __('Nombre') }}</label>
-                            <input id="nombre" type="text" class="form-control @error('nombre') is-invalid @enderror" name="nombre" required autofocus>
+                            <input id="nombre" type="text" class="form-control @error('nombre') is-invalid @enderror" name="nombre" value="{{ old('nombre') }}" required autofocus>
                             @error('nombre')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -23,7 +24,7 @@
 
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">{{ __('Descripción') }}</label>
-                            <textarea id="descripcion" class="form-control @error('descripcion') is-invalid @enderror" name="descripcion" rows="4" required></textarea>
+                            <textarea id="descripcion" class="form-control @error('descripcion') is-invalid @enderror" name="descripcion" rows="4" required>{{ old('descripcion') }}</textarea>
                             @error('descripcion')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -32,8 +33,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="imagen" class="form-label">{{ __('URL de la Imagen') }}</label>
-                            <input id="imagen" type="url" class="form-control @error('imagen') is-invalid @enderror" name="imagen" required>
+                            <label for="imagen" class="form-label">{{ __('Imagen del Producto') }}</label>
+                            <!-- Aseguramos que el input es de tipo file -->
+                            <input id="imagen" type="file" class="form-control @error('imagen') is-invalid @enderror" name="imagen" accept="image/*">
                             @error('imagen')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -43,35 +45,27 @@
 
                         <div class="mb-3">
                             <label for="precio" class="form-label">{{ __('Precio') }}</label>
-                            <input id="precio" type="number" class="form-control @error('precio') is-invalid @enderror" name="precio" required>
+                            <input id="precio" type="number" min="0" step="0.01" class="form-control @error('precio') is-invalid @enderror" name="precio" value="{{ old('precio') }}" required>
                             @error('precio')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                                <label for="oculto" class="form-label">{{ __('Oculto') }}</label>
-                                <!-- Campo hidden para enviar el valor "false" cuando el checkbox no está marcado -->
-                                <input type="hidden" name="oculto" value="0">
-                                <!-- Checkbox real que enviará "1" cuando está marcado -->
-                                <input id="oculto" type="checkbox"
-                                    class="form-check-input @error('oculto') is-invalid @enderror"
-                                    name="oculto"
-                                    value="1"
-                                    {{ old('oculto', isset($producto) && $producto->oculto) ? 'checked' : '' }}>
-                                <!-- Manejo de errores si es necesario -->
-                                @error('oculto')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
 
                         <div class="mb-3">
-                            <br>
-                            <br>
-                            <button type="submit" class="btn btn-primary custom-btn">{{ __('Crear Producto') }}</button> <!-- Aplicación de la clase 'custom-btn' -->
+                            <label for="oculto" class="form-label">{{ __('Oculto') }}</label>
+                            <input type="hidden" name="oculto" value="0">
+                            <input id="oculto" type="checkbox" class="form-check-input @error('oculto') is-invalid @enderror" name="oculto" value="1">
+                            @error('oculto')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary custom-btn">{{ __('Crear Producto') }}</button>
                         </div>
                     </form>
                 </div>
@@ -80,29 +74,29 @@
     </div>
 
     @if ($errors->any())
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-8">
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
     @endif
 </div>
 
-<!-- Agrega este estilo CSS al final del archivo o en tu archivo CSS principal -->
 <style>
     .custom-btn {
-        background-color: #439FA5; /* Color de fondo personalizado */
-        border-color: #439FA5; /* Color del borde */
+        background-color: #439FA5;
+        border-color: #439FA5;
+        color: white;
     }
 
     .custom-btn:hover {
-        background-color: #367f85; /* Color de fondo ligeramente más oscuro al pasar el cursor */
+        background-color: #367f85;
         border-color: #367f85;
     }
 </style>

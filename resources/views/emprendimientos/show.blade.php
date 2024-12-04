@@ -1,17 +1,73 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .star-rating {
+        direction: rtl;
+        display: flex;
+        justify-content: flex-start;
+        font-size: 2rem;
+        gap: 0.2rem;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        color: #ccc;
+        cursor: pointer;
+    }
+    .star-rating input:checked ~ label {
+        color: #FFD700;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #FFD700;
+    }
+</style>
+
 <div class="container mt-5">
     <!-- Encabezado del Emprendimiento con Imagen -->
     <div class="row mb-4 text-center">
         <div class="col">
-            <img src="{{ $emprendimiento->imagen }}" class="img-fluid mb-4" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;">
+            <img src="{{ asset('storage/' . $emprendimiento->imagen) }}" class="img-fluid mb-4" alt="{{ $emprendimiento->nombre }}" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;">
             <h1 class="display-4" style="background-color: #439FA5; color: white; padding: 10px;"><strong>{{ $emprendimiento->nombre }}</strong></h1>
             <hr style="border: 2.5px solid #000; width: 70%; margin: 0 auto;">
             <br>
             <h5 style="max-width: 80%; margin: 0 auto; text-align: center; overflow-wrap: break-word;">{{ $emprendimiento->descripcion }}</h5>
         </div>
     </div>
+
+    <!-- Botón para Crear Pedido -->
+    @auth
+        @if (auth()->user()->id !== $emprendimiento->emprendedor_id)
+            <div class="text-center mb-4">
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#crearPedidoForm" aria-expanded="false" aria-controls="crearPedidoForm" style="background-color: #439FA5; border-color: #439FA5;">
+                    Solicitar Pedido
+                </button>
+            </div>
+
+            <!-- Formulario para Crear Pedido (Desplegable) -->
+            <div class="collapse mb-5" id="crearPedidoForm">
+                <div class="card card-body" style="border: 2px solid #439FA5; border-radius: 8px; background-color: #F0F0F0;">
+                    <form action="{{ route('pedidos.store') }}" method="POST">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <label for="mensaje" class="form-label">Detalles del pedido:</label>
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="3" required></textarea>
+                            <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
+                            <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Enviar Pedido</button>
+                    </form>
+                </div>
+            </div>
+        @endif
+    @endauth
+
+    @guest
+        <p class="text-muted text-center">Inicia sesión para solicitar un pedido.</p>
+    @endguest
+
 
     <!-- Información detallada del Emprendedor -->
     <div class="row mb-5">
@@ -24,7 +80,6 @@
                     <p><strong>Nombre:</strong> {{ $emprendimiento->emprendedor->nombre }}</p>
                     <p><strong>Email:</strong> {{ $emprendimiento->emprendedor->email }}</p>
                     <p><strong>Teléfono:</strong> {{ $emprendimiento->emprendedor->celular }}</p>
-                    <!-- Agrega más campos según sea necesario -->
                 </div>
             </div>
         </div>
@@ -38,17 +93,36 @@
         </div>
     </div>
 
+    <!-- Barra de búsqueda -->
+    <div class="row mb-4">
+        <div class="col-md-8 offset-md-2">
+            <form action="{{ route('emprendimientos.buscarProductos', $emprendimiento->id) }}" method="GET" class="row g-2 align-items-center">
+                <div class="col">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o descripción..."
+                        value="{{ request()->query('search') }}" style="height: 40px;">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mx-2" style="background-color: #439FA5; border-color: #439FA5; height: 40px;">
+                        Buscar
+                    </button>
+                    <a href="{{ route('emprendimientos.buscarProductos', $emprendimiento->id) }}" class="btn mx-2" style="background-color: #FFD700; color: black; border: 1px solid #FFC107; height: 40px;">
+                        Limpiar Filtros
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @forelse($productos as $producto)
             @if(!$producto->oculto)
                 <div class="col mb-4">
                     <div class="card h-100" style="border: 1px solid #ddd;">
-                        <img src="{{ $producto->imagen }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
+                        <img src="{{ asset('storage/' . $producto->imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover;">
                         <div class="card-body d-flex flex-column" style="background-color: #F0F0F0;">
                             <h5 class="card-title" style="color: #439FA5;">{{ $producto->nombre }}</h5>
                             <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($producto->descripcion, 100) }}</p>
                             <p class="card-text"><strong>Precio:</strong> C${{ $producto->precio }}</p>
-                            <!-- No agregamos el botón "Ver más" ya que quieres mostrar todos los detalles aquí -->
                         </div>
                     </div>
                 </div>
@@ -59,6 +133,49 @@
             </div>
         @endforelse
     </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header" style="background-color: #439FA5;">
+                    <h2 class="text-white">Calificación</h2>
+                </div>
+                <div class="card-body" style="border: 2px solid #439FA5; border-radius: 8px; background-color: #F0F0F0;">
+                    <!-- Formulario para añadir calificación con estrellas -->
+                    @auth
+                        <form action="{{ route('calificar.emprendimiento') }}" method="POST">
+                            @csrf
+                            <div class="form-group mb-3">
+                                <label class="form-label">Calificación:</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="calificacion" value="5">
+                                    <label for="star5" title="5 estrellas">★</label>
+                                    <input type="radio" id="star4" name="calificacion" value="4">
+                                    <label for="star4" title="4 estrellas">★</label>
+                                    <input type="radio" id="star3" name="calificacion" value="3">
+                                    <label for="star3" title="3 estrellas">★</label>
+                                    <input type="radio" id="star2" name="calificacion" value="2">
+                                    <label for="star2" title="2 estrellas">★</label>
+                                    <input type="radio" id="star1" name="calificacion" value="1">
+                                    <label for="star1" title="1 estrella">★</label>
+                                </div>
+                                <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
+                                <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Enviar Calificación</button>
+                        </form>
+                    @endauth
+    
+                    <!-- Mostrar mensaje de autenticación -->
+                    @guest
+                        <p class="text-muted">Inicia sesión para dejar una calificación.</p>
+                    @endguest
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Sección de Comentarios -->
     <div class="row mb-5">
@@ -153,36 +270,14 @@
             </div>
         </div>
     </div>
-
-    <!-- Sección de Calificación -->
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header" style="background-color: #439FA5;">
-                    <h2 class="text-white">Calificación</h2>
-                </div>
-                <div class="card-body" style="border: 2px solid #439FA5; border-radius: 8px; background-color: #F0F0F0;">
-                    <!-- Formulario para añadir calificación -->
-                    @auth
-                        <form action="{{ route('calificar.emprendimiento' )}}" method="POST">
-                            @csrf
-                            <div class="form-group mb-3">
-                                <label for="calificacion" class="form-label">Calificación (0 al 5):</label>
-                                <input type="number" class="form-control" id="calificacion" name="calificacion" min="0" max="5" required>
-                                <input type="hidden" name="estudiante_id" value="{{ auth()->user()->id }}">
-                                <input type="hidden" name="emprendimiento_id" value="{{ $emprendimiento->id }}">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background-color: #439FA5; border-color: #439FA5;">Enviar Calificación</button>
-                        </form>
-                    @endauth
-
-                    <!-- Mostrar mensaje de autenticación -->
-                    @guest
-                        <p class="text-muted">Inicia sesión para dejar una calificación.</p>
-                    @endguest
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+
+<script>
+    document.querySelectorAll('.star-rating input').forEach((star) => {
+        star.addEventListener('change', () => {
+            console.log(`Calificación seleccionada: ${star.value}`);
+        });
+    });
+</script>
+
 @endsection

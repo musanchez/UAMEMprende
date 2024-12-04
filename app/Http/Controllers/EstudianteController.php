@@ -7,6 +7,8 @@ use App\Models\Estudiante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EstudianteExport;
 
 class EstudianteController extends Controller
 {
@@ -65,8 +67,8 @@ class EstudianteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-        if ($user->id != $id) {
+        $user = Estudiante::findOrFail($id);
+        if (Auth::id() != $id) {
             return redirect()->route('home')->with('error', 'No puedes actualizar el perfil de otro usuario.');
         }
 
@@ -147,5 +149,10 @@ class EstudianteController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function exportarEstudiantes()
+    {
+        return Excel::download(new EstudianteExport, 'usuarios_estudiantes.xlsx');
     }
 }
